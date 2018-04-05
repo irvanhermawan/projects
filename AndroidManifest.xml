@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="id.co.projectscoid">
+    
+    <uses-sdk tools:overrideLibrary="com.amulyakhare.textdrawable,com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,com.h6ah4i.android.multiselectlistpreferencecompat,android.support.v13,com.davemorrissey.labs.subscaleview,com.tomergoldst.tooltips,com.klinker.android.send_message,com.takisoft.colorpicker,android.support.v14.preference"/>
+
+    <permission android:name="id.co.projectscoid.ACCESS_SECRETS"
+        android:label="Access to TextSecure Secrets"
+        android:protectionLevel="signature" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.network" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+    <uses-feature android:name="android.hardware.microphone" android:required="false"/>
+    <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+    <uses-feature android:name="android.hardware.portrait" android:required="false"/>
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
+
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="id.co.projectscoid.ACCESS_SECRETS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.WRITE_PROFILE"/>
+    <uses-permission android:name="android.permission.BROADCAST_WAP_PUSH"
+        tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_MMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_CALL_STATE"/>
+
+    <!-- For sending/receiving events -->
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+
+
+    <!-- Normal -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <!-- So we can add a TextSecure 'Account' -->
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+
+    <!-- For conversation 'shortcuts' on the desktop -->
+    <uses-permission android:name="android.permission.INSTALL_SHORTCUT"/>
+
+    <!-- For fixing MMS -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+    <!-- Set image as wallpaper -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+
+    <permission android:name="id.co.projectscoid.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="id.co.projectscoid.permission.C2D_MESSAGE" />
+    
+    <application
+        android:name=".ApplicationContext"
+        android:icon="@drawable/icon"
+        android:roundIcon="@drawable/icon_circle"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        tools:replace="android:allowBackup"
+        android:allowBackup="false"
+        android:theme="@style/TextSecure.LightTheme"
+        android:largeHeap="true">
+
+
+        <activity android:name=".MainProjectsActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@style/TextSecure.LightNoActionBar"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true" />
+
+        <activity-alias android:name=".RoutingActivity"
+            android:targetActivity=".MainProjectsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+            <meta-data android:name="com.sec.minimode.icon.portrait.normal"
+                android:resource="@drawable/icon" />
+            <meta-data android:name="com.sec.minimode.icon.landscape.normal"
+                android:resource="@drawable/icon" />
+        </activity-alias>
+
+        <activity android:name=".preferences.MmsPreferencesActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+
+        <activity android:name=".ShareActivity"
+            android:theme="@style/TextSecure.LightNoActionBar"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:noHistory="true"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="application/*"/>
+                <data android:mimeType="text/*"/>
+                <data android:mimeType="*/*"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.chooser.chooser_target_service"
+                android:value=".service.DirectShareService" />
+
+        </activity>
+
+
+
+        <activity android:name=".ConversationActivity"
+            android:windowSoftInputMode="stateUnchanged"
+            android:launchMode="singleTask"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize">
+           <!-- android:parentActivityName=".ConversationListActivity" > -->
+            <!--    <meta-data
+                  android:name="android.support.PARENT_ACTIVITY"/>
+                android:value="id.co.projectscoid.ConversationListActivity" />-->
+        </activity>
+
+        <activity android:name=".ConversationPopupActivity"
+            android:windowSoftInputMode="stateVisible"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:theme="@style/TextSecure.LightTheme.Popup"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize" />
+
+
+        <activity android:name=".giph.ui.GiphyActivity"
+            android:theme="@style/TextSecure.LightNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+
+
+
+        <activity android:name=".PlayServicesProblemActivity"
+            android:theme="@style/TextSecure.DialogActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+
+     <!--   <activity android:name="id.co.projectscoid.webrtc.VoiceCallShare"
+            android:excludeFromRecents="true"
+            android:theme="@style/NoAnimation.Theme.BlackScreen"
+            android:launchMode="singleTask"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.id.co.projectscoid.call" />
+            </intent-filter>
+
+        </activity> -->
+
+
+        <activity android:name=".scribbles.ScribbleActivity"
+            android:theme="@style/TextSecure.LightNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+
+        <activity android:name=".scribbles.StickerSelectActivity"
+            android:theme="@style/TextSecure.LightTheme"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+
+        <!-- List Service -->
+        <service android:enabled="true" android:name="id.co.projectscoid.service.WebRtcCallService"/>
+        <service android:enabled="true" android:name=".service.ApplicationMigrationService"/>
+        <service android:enabled="true" android:name=".service.KeyCachingService"/>
+        <service android:enabled="true" android:name=".service.MessageRetrievalService"/>
+
+        <service android:name=".service.QuickResponseService"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".service.AccountAuthenticatorService" android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
+        </service>
+
+        <service android:name=".service.ContactsSyncAdapterService" android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/syncadapter" />
+            <meta-data android:name="android.provider.CONTACTS_STRUCTURE" android:resource="@xml/contactsformat" />
+        </service>
+
+   <!--     <service android:name=".service.DirectShareService"
+            android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.chooser.ChooserTargetService" />
+            </intent-filter>
+        </service>  -->
+
+        <service android:name=".service.GenericForegroundService"/>
+
+        <!-- List Provider and Receiver -->
+        <receiver android:name=".gcm.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="id.co.projectscoid" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.SmsListener"
+            android:permission="android.permission.BROADCAST_SMS"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1001">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.SmsDeliveryListener"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.services.MESSAGE_SENT"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.MmsListener"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_WAP_PUSH">
+            <intent-filter android:priority="1001">
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED"/>
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER"/>
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".notifications.MarkReadReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.notifications.CLEAR"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".notifications.RemoteReplyReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.notifications.WEAR_REPLY"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".notifications.AndroidAutoHeardReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.notifications.ANDROID_AUTO_HEARD"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".notifications.AndroidAutoReplyReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.notifications.ANDROID_AUTO_REPLY"/>
+            </intent-filter>
+        </receiver>
+
+
+        <provider android:name=".providers.PartProvider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            android:authorities="id.co.provider.projectscoid" />
+
+        <provider android:name=".providers.MmsBodyProvider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            android:authorities="id.co.provider.projectscoid.mms" />
+
+        <provider android:name="android.support.v4.content.FileProvider"
+            android:authorities="id.co.projectscoid.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider_paths" />
+
+        </provider>
+
+        <receiver android:name=".service.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="id.co.projectscoid.RESTART"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.DirectoryRefreshListener">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.RotateSignedPreKeyListener">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.PersistentConnectionBootListener">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".notifications.MessageNotifier$ReminderReceiver">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.MessageNotifier.REMINDER_ACTION"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".notifications.DeleteNotificationReceiver">
+            <intent-filter>
+                <action android:name="id.co.projectscoid.DELETE_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
+
+    <!--    <receiver android:name=".ExperienceUpgradeActivity$AppUpgradeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <data android:scheme="package" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="id.co.projectscoid.ExperienceUpgradeActivity.DISMISS_ACTION"/>
+            </intent-filter>
+        </receiver>   -->
+
+        <receiver
+            android:name=".service.PanicResponderListener"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="info.guardianproject.panic.action.TRIGGER" />
+            </intent-filter>
+        </receiver>
+
+        <uses-library android:name="com.sec.android.app.multiwindow" android:required="false"/>
+        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" />
+        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:value="632.0dip" />
+        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:value="598.0dip" />
+        <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:value="632.0dip" />
+        <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:value="598.0dip" />
+        
+
+    </application>
+
+</manifest>
