@@ -79,7 +79,7 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
     super.onCreate();
    // initializeRandomNumberFix();
   //  initializeLogging();
-  //  initializeDependencyInjection();
+    initializeDependencyInjection();
     initializeJobManager();
   //  initializeExpiringMessageManager();
   //  initializeGcmCheck();
