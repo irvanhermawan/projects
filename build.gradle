@@ -241,7 +241,7 @@ android {
     defaultConfig {
         versionCode 1
         versionName "1.0.0"
-       // applicationId "co.id.projectscoid"
+        applicationId "co.id.projectscoid"
         minSdkVersion 15
         targetSdkVersion 22
         multiDexEnabled true
@@ -405,11 +405,11 @@ tasks.whenTaskAdded { task ->
 
 def getLastCommitTimestamp() {
     new ByteArrayOutputStream().withStream { os ->
-        /*  def result = exec {
+          def result = exec {
               executable = 'git'
               args = ['log', '-1', '--pretty=format:%ct']
               standardOutput = os
-          } */
+          }
 
         return os.toString() + "000"
     }
