@@ -99,6 +99,7 @@ public class SignalServiceNetworkAccess {
   private final String[]                                censoredCountries;
   private final SignalServiceConfiguration              uncensoredConfiguration;
 
+
   public SignalServiceNetworkAccess(Context context) {
     final TrustStore       googleTrustStore      = new GoogleFrontingTrustStore(context);
     final SignalServiceUrl baseGoogleService     = new SignalServiceUrl("https://www.google.com", APPSPOT_SERVICE_REFLECTOR_HOST, googleTrustStore, GMAIL_CONNECTION_SPEC);
@@ -164,13 +165,15 @@ public class SignalServiceNetworkAccess {
   }
 
   public SignalServiceConfiguration getConfiguration(@Nullable String localNumber) {
-    if (localNumber == null) return this.uncensoredConfiguration;
+   /*  if (localNumber == null) return this.uncensoredConfiguration;
 
     for (String censoredRegion : this.censoredCountries) {
       if (localNumber.startsWith(censoredRegion)) {
         return this.censorshipConfiguration.get(censoredRegion);
       }
     }
+
+    */
 
     return this.uncensoredConfiguration;
   }

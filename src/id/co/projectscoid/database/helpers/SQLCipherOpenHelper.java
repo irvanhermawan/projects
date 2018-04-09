@@ -37,8 +37,8 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
   private static final int MIGRATE_PREKEYS_VERSION         = 3;
   private static final int MIGRATE_SESSIONS_VERSION        = 4;
 
-  private static final int    DATABASE_VERSION = 4;
-  private static final String DATABASE_NAME    = "signal.db";
+  private static final int    DATABASE_VERSION = 1;
+  private static final String DATABASE_NAME    = "projects.db";
 
   private final Context        context;
   private final DatabaseSecret databaseSecret;

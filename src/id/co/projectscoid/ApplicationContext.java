@@ -34,6 +34,8 @@ import org.whispersystems.jobqueue.dependencies.DependencyInjector;
 import org.whispersystems.jobqueue.persistence.JavaJobSerializer;
 import org.whispersystems.libsignal.logging.SignalProtocolLoggerProvider;
 import org.whispersystems.libsignal.util.AndroidSignalProtocolLogger;
+import id.co.projectscoid.libprojects.ProjectsProtocolLoggerProvider;
+import id.co.projectscoid.util.AndroidProjetctsProtocolLogger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -78,14 +80,15 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
   public void onCreate() {
     super.onCreate();
    // initializeRandomNumberFix();
-  //  initializeLogging();
+    initializeLogging();
     initializeDependencyInjection();
     initializeJobManager();
   //  initializeExpiringMessageManager();
+
   //  initializeGcmCheck();
-   // initializeSignedPreKeyCheck();
-   // initializePeriodicTasks();
-  //  initializeCircumvention();
+    initializeSignedPreKeyCheck();
+    initializePeriodicTasks();
+    initializeCircumvention();
   //  initializeWebRtc();
   }
 
@@ -109,7 +112,7 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
   }
 
   private void initializeLogging() {
-    SignalProtocolLoggerProvider.setProvider(new AndroidSignalProtocolLogger());
+    ProjectsProtocolLoggerProvider.setProvider(new AndroidProjetctsProtocolLogger());
   }
 
   private void initializeJobManager() {

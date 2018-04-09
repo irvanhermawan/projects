@@ -23,7 +23,8 @@ public class GoogleFrontingTrustStore implements TrustStore {
 
   @Override
   public String getKeyStorePassword() {
-    return "whisper";
+    return "projects";
   }
+  //whisper = projects
 
 }

@@ -213,6 +213,11 @@
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
+        <activity android:name=".NewConversationActivity"
+            android:theme="@style/TextSecure.LightNoActionBar"
+            android:windowSoftInputMode="stateAlwaysVisible"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize" />
+
 
         <!-- List Service -->
         <service android:enabled="true" android:name="id.co.projectscoid.service.WebRtcCallService"/>
