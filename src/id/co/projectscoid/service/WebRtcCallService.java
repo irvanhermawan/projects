@@ -25,6 +25,37 @@ import android.util.Pair;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import org.greenrobot.eventbus.EventBus;
+import id.co.projectscoid.ApplicationContext;
+import id.co.projectscoid.WebRtcCallActivity;
+import id.co.projectscoid.contacts.ContactAccessor;
+import id.co.projectscoid.database.Address;
+import id.co.projectscoid.database.DatabaseFactory;
+import id.co.projectscoid.database.RecipientDatabase;
+import id.co.projectscoid.database.RecipientDatabase.VibrateState;
+import id.co.projectscoid.dependencies.InjectableType;
+import id.co.projectscoid.events.WebRtcViewModel;
+import id.co.projectscoid.notifications.MessageNotifier;
+import id.co.projectscoid.permissions.Permissions;
+import id.co.projectscoid.recipients.Recipient;
+import id.co.projectscoid.util.FutureTaskListener;
+import id.co.projectscoid.util.ListenableFutureTask;
+import id.co.projectscoid.util.ServiceUtil;
+import id.co.projectscoid.util.TextSecurePreferences;
+import id.co.projectscoid.util.Util;
+import id.co.projectscoid.webrtc.CallNotificationBuilder;
+import id.co.projectscoid.webrtc.IncomingPstnCallReceiver;
+import id.co.projectscoid.webrtc.PeerConnectionFactoryOptions;
+import id.co.projectscoid.webrtc.PeerConnectionWrapper;
+import id.co.projectscoid.webrtc.PeerConnectionWrapper.PeerConnectionException;
+import id.co.projectscoid.webrtc.UncaughtExceptionHandlerManager;
+import id.co.projectscoid.webrtc.WebRtcDataProtos;
+import id.co.projectscoid.webrtc.WebRtcDataProtos.Connected;
+import id.co.projectscoid.webrtc.WebRtcDataProtos.Data;
+import id.co.projectscoid.webrtc.WebRtcDataProtos.Hangup;
+import id.co.projectscoid.webrtc.audio.BluetoothStateManager;
+import id.co.projectscoid.webrtc.audio.OutgoingRinger;
+import id.co.projectscoid.webrtc.audio.SignalAudioManager;
+import id.co.projectscoid.webrtc.locks.LockManager;
 import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.EglBase;
@@ -67,36 +98,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import id.co.projectscoid.ApplicationContext;
-import id.co.projectscoid.contacts.ContactAccessor;
-import id.co.projectscoid.database.Address;
-import id.co.projectscoid.database.DatabaseFactory;
-import id.co.projectscoid.database.RecipientDatabase.VibrateState;
-import id.co.projectscoid.dependencies.InjectableType;
-import id.co.projectscoid.events.WebRtcViewModel;
-import id.co.projectscoid.notifications.MessageNotifier;
-import id.co.projectscoid.permissions.Permissions;
-import id.co.projectscoid.recipients.Recipient;
-import id.co.projectscoid.util.FutureTaskListener;
-import id.co.projectscoid.util.ListenableFutureTask;
-import id.co.projectscoid.util.ServiceUtil;
-import id.co.projectscoid.util.TextSecurePreferences;
-import id.co.projectscoid.util.Util;
-import id.co.projectscoid.webrtc.CallNotificationBuilder;
-import id.co.projectscoid.webrtc.IncomingPstnCallReceiver;
-import id.co.projectscoid.webrtc.PeerConnectionFactoryOptions;
-import id.co.projectscoid.webrtc.PeerConnectionWrapper;
-import id.co.projectscoid.webrtc.PeerConnectionWrapper.PeerConnectionException;
-import id.co.projectscoid.webrtc.UncaughtExceptionHandlerManager;
-import id.co.projectscoid.webrtc.WebRtcDataProtos;
-import id.co.projectscoid.webrtc.WebRtcDataProtos.Connected;
-import id.co.projectscoid.webrtc.WebRtcDataProtos.Data;
-import id.co.projectscoid.webrtc.WebRtcDataProtos.Hangup;
-import id.co.projectscoid.webrtc.audio.BluetoothStateManager;
-import id.co.projectscoid.webrtc.audio.OutgoingRinger;
-import id.co.projectscoid.webrtc.audio.SignalAudioManager;
-import id.co.projectscoid.webrtc.locks.LockManager;
 
 import static id.co.projectscoid.webrtc.CallNotificationBuilder.TYPE_ESTABLISHED;
 import static id.co.projectscoid.webrtc.CallNotificationBuilder.TYPE_INCOMING_CONNECTING;
@@ -643,7 +644,7 @@ public class WebRtcCallService extends Service implements InjectableType, PeerCo
     sendMessage(WebRtcViewModel.State.CALL_BUSY, recipient, localVideoEnabled, remoteVideoEnabled, bluetoothAvailable, microphoneEnabled);
 
     audioManager.startOutgoingRinger(OutgoingRinger.Type.BUSY);
-  /*  Util.runOnMainDelayed(new Runnable() {
+    Util.runOnMainDelayed(new Runnable() {
       @Override
       public void run() {
         Intent intent = new Intent(WebRtcCallService.this, WebRtcCallService.class);
@@ -653,7 +654,7 @@ public class WebRtcCallService extends Service implements InjectableType, PeerCo
 
         startService(intent);
       }
-    }, WebRtcCallActivity.BUSY_SIGNAL_DELAY_FINISH); */
+    }, WebRtcCallActivity.BUSY_SIGNAL_DELAY_FINISH);
   }
 
   private void handleCheckTimeout(Intent intent) {
@@ -963,10 +964,10 @@ public class WebRtcCallService extends Service implements InjectableType, PeerCo
   }
 
   private void startCallCardActivity() {
-  /*  Intent activityIntent = new Intent();
+    Intent activityIntent = new Intent();
     activityIntent.setClass(this, WebRtcCallActivity.class);
     activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    this.startActivity(activityIntent); */
+    this.startActivity(activityIntent);
   }
 
   ///

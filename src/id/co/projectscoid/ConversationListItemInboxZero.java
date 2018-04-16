@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import id.co.projectscoid.database.model.ThreadRecord;
 import id.co.projectscoid.mms.GlideRequests;
+
 import java.util.Locale;
 import java.util.Set;
 

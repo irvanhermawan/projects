@@ -18,6 +18,9 @@ import android.view.View;
 
 import id.co.projectscoid.PassphraseRequiredActionBarActivity;
 import id.co.projectscoid.R;
+import id.co.projectscoid.crypto.MasterSecret;
+import id.co.projectscoid.mms.GlideApp;
+import id.co.projectscoid.mms.GlideRequests;
 import id.co.projectscoid.providers.PersistentBlobProvider;
 import id.co.projectscoid.scribbles.viewmodel.Font;
 import id.co.projectscoid.scribbles.viewmodel.Layer;
@@ -31,8 +34,7 @@ import id.co.projectscoid.scribbles.widget.entity.TextEntity;
 import id.co.projectscoid.util.MediaUtil;
 import id.co.projectscoid.util.Util;
 import id.co.projectscoid.util.concurrent.ListenableFuture;
-import id.co.projectscoid.mms.GlideRequests;
-import id.co.projectscoid.mms.GlideApp;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

@@ -200,7 +200,7 @@ public class ContactsCursorLoader extends CursorLoader {
 
   private Cursor getGroupsCursor() {
     MatrixCursor groupContacts = new MatrixCursor(CONTACT_PROJECTION);
-   /* try (GroupDatabase.Reader reader = DatabaseFactory.getGroupDatabase(getContext()).getGroupsFilteredByTitle(filter)) {
+    try (GroupDatabase.Reader reader = DatabaseFactory.getGroupDatabase(getContext()).getGroupsFilteredByTitle(filter)) {
       GroupDatabase.GroupRecord groupRecord;
       while ((groupRecord = reader.getNext()) != null) {
         groupContacts.addRow(new Object[] { groupRecord.getTitle(),
@@ -210,8 +210,7 @@ public class ContactsCursorLoader extends CursorLoader {
                                             ContactsDatabase.NORMAL_TYPE });
       }
     }
-    return groupContacts;*/
-   return null;
+    return groupContacts;
   }
 
   private Cursor getNewNumberCursor() {

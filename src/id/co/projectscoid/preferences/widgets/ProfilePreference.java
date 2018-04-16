@@ -17,8 +17,8 @@ import id.co.projectscoid.R;
 import id.co.projectscoid.contacts.avatars.ProfileContactPhoto;
 import id.co.projectscoid.contacts.avatars.ResourceContactPhoto;
 import id.co.projectscoid.database.Address;
-import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.mms.GlideApp;
+import id.co.projectscoid.util.TextSecurePreferences;
 
 public class ProfilePreference extends Preference {
 

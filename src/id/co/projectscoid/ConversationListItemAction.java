@@ -9,8 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import id.co.projectscoid.database.model.ThreadRecord;
-import id.co.projectscoid.util.ViewUtil;
 import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.util.ViewUtil;
+
 import java.util.Locale;
 import java.util.Set;
 

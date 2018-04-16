@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,11 +14,14 @@ import android.widget.TextView;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import id.co.projectscoid.mms.GlideRequests;
+
 import id.co.projectscoid.components.AvatarImageView;
+import id.co.projectscoid.mms.GlideRequests;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.ViewUtil;
+
+import java.lang.ref.WeakReference;
 
 public class ConversationTitleView extends RelativeLayout {
 

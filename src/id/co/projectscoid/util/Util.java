@@ -367,7 +367,7 @@ public class Util {
   }
 
   public static int getDaysTillBuildExpiry() {
-    int age =  0;//(int)TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - BuildConfig.BUILD_TIMESTAMP);
+    int age = (int)TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - BuildConfig.BUILD_TIMESTAMP);
     return 90 - age;
   }
 

@@ -3,12 +3,8 @@ package id.co.projectscoid.jobs;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.whispersystems.jobqueue.JobParameters;
-
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
+import id.co.projectscoid.BuildConfig;
+import id.co.projectscoid.TextSecureExpiredException;
 import id.co.projectscoid.attachments.Attachment;
 import id.co.projectscoid.crypto.MasterSecret;
 import id.co.projectscoid.database.AttachmentDatabase;
@@ -17,8 +13,13 @@ import id.co.projectscoid.mms.MediaConstraints;
 import id.co.projectscoid.mms.MediaStream;
 import id.co.projectscoid.mms.MmsException;
 import id.co.projectscoid.transport.UndeliverableMessageException;
+import id.co.projectscoid.util.MediaUtil;
+import id.co.projectscoid.util.Util;
+import org.whispersystems.jobqueue.JobParameters;
 
-//import id.co.projectscoid.TextSecureExpiredException;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class SendJob extends MasterSecretJob {
 
@@ -31,13 +32,13 @@ public abstract class SendJob extends MasterSecretJob {
 
   @Override
   public final void onRun(MasterSecret masterSecret) throws Exception {
-   /* if (Util.getDaysTillBuildExpiry() <= 0) {
+    if (Util.getDaysTillBuildExpiry() <= 0) {
       throw new TextSecureExpiredException(String.format("TextSecure expired (build %d, now %d)",
                                                          BuildConfig.BUILD_TIMESTAMP,
                                                          System.currentTimeMillis()));
     }
 
-    onSend(masterSecret); */
+    onSend(masterSecret);
   }
 
   protected abstract void onSend(MasterSecret masterSecret) throws Exception;
@@ -50,8 +51,8 @@ public abstract class SendJob extends MasterSecretJob {
     }
   }
 
-  protected List<Attachment> scaleAttachments(@NonNull MediaConstraints constraints,
-                                              @NonNull List<Attachment> attachments)
+  protected List<Attachment> scaleAndStripExifFromAttachments(@NonNull MediaConstraints constraints,
+                                                              @NonNull List<Attachment> attachments)
       throws UndeliverableMessageException
   {
     AttachmentDatabase attachmentDatabase = DatabaseFactory.getAttachmentDatabase(context);
@@ -60,7 +61,12 @@ public abstract class SendJob extends MasterSecretJob {
     for (Attachment attachment : attachments) {
       try {
         if (constraints.isSatisfied(context, attachment)) {
-          results.add(attachment);
+          if (MediaUtil.isJpeg(attachment)) {
+            MediaStream stripped = constraints.getResizedMedia(context, attachment);
+            results.add(attachmentDatabase.updateAttachmentData(attachment, stripped));
+          } else {
+            results.add(attachment);
+          }
         } else if (constraints.canResize(attachment)) {
           MediaStream resized = constraints.getResizedMedia(context, attachment);
           results.add(attachmentDatabase.updateAttachmentData(attachment, resized));

@@ -3,10 +3,9 @@ package id.co.projectscoid;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
-import org.whispersystems.libsignal.util.guava.Optional;
-
 import id.co.projectscoid.util.CharacterCalculator;
 import id.co.projectscoid.util.CharacterCalculator.CharacterState;
+import org.whispersystems.libsignal.util.guava.Optional;
 
 public class TransportOption {
 

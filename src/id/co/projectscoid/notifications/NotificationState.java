@@ -8,12 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import id.co.projectscoid.ConversationActivity;
+import id.co.projectscoid.ConversationPopupActivity;
+import id.co.projectscoid.database.RecipientDatabase.VibrateState;
+import id.co.projectscoid.recipients.Recipient;
+
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import id.co.projectscoid.database.RecipientDatabase.VibrateState;
-import id.co.projectscoid.recipients.Recipient;
 
 public class NotificationState {
 
@@ -158,16 +160,16 @@ public class NotificationState {
     return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
- /*  public PendingIntent getQuickReplyIntent(Context context, Recipient recipient) {
+  public PendingIntent getQuickReplyIntent(Context context, Recipient recipient) {
     if (threads.size() != 1) throw new AssertionError("We only support replies to single thread notifications! " + threads.size());
 
-   Intent     intent           = new Intent(context, ConversationPopupActivity.class);
+    Intent     intent           = new Intent(context, ConversationPopupActivity.class);
     intent.putExtra(ConversationActivity.ADDRESS_EXTRA, recipient.getAddress());
     intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, (long)threads.toArray()[0]);
     intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 
     return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-  } */
+  }
 
   public PendingIntent getDeleteIntent(Context context) {
     int       index = 0;

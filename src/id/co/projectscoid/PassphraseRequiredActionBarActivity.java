@@ -11,17 +11,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import java.util.Locale;
-
 import id.co.projectscoid.crypto.MasterSecretUtil;
+import id.co.projectscoid.jobs.PushNotificationReceiveJob;
 import id.co.projectscoid.push.SignalServiceNetworkAccess;
 import id.co.projectscoid.service.KeyCachingService;
 import id.co.projectscoid.service.MessageRetrievalService;
 import id.co.projectscoid.util.TextSecurePreferences;
 
-//public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarActivity implements MasterSecretListener {
-public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarActivity /*implements MasterSecretListener */{
+import java.util.Locale;
 
+public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarActivity implements MasterSecretListener {
   private static final String TAG = PassphraseRequiredActionBarActivity.class.getSimpleName();
 
   public static final String LOCALE_EXTRA = "locale_extra";
@@ -50,7 +49,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
 
     if (!isFinishing()) {
       initializeClearKeyReceiver();
-     // onCreate(savedInstanceState, true);
+      onCreate(savedInstanceState, true);
     }
   }
 
@@ -64,7 +63,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     KeyCachingService.registerPassphraseActivityStarted(this);
 
     if (!networkAccess.isCensored(this)) MessageRetrievalService.registerActivityStarted(this);
-   // else                                 ApplicationContext.getInstance(this).getJobManager().add(new PushNotificationReceiveJob(this));
+    else                                 ApplicationContext.getInstance(this).getJobManager().add(new PushNotificationReceiveJob(this));
 
     isVisible = true;
   }
@@ -87,12 +86,12 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     removeClearKeyReceiver(this);
   }
 
- /* @Override
+  @Override
   public void onMasterSecretCleared() {
     Log.w(TAG, "onMasterSecretCleared()");
     if (isVisible) routeApplicationState(true);
     else           finish();
-  } */
+  }
 
   protected <T extends Fragment> T initFragment(@IdRes int target,
                                                 @NonNull T fragment)
@@ -138,11 +137,11 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     Log.w(TAG, "routeApplicationState(), state: " + state);
 
     switch (state) {
-  //  case STATE_CREATE_PASSPHRASE:        return getCreatePassphraseIntent();
-  //  case STATE_PROMPT_PASSPHRASE:        return getPromptPassphraseIntent();
-  //  case STATE_UPGRADE_DATABASE:         return getUpgradeDatabaseIntent();
-  //  case STATE_PROMPT_PUSH_REGISTRATION: return getPushRegistrationIntent();
-  //  case STATE_EXPERIENCE_UPGRADE:       return getExperienceUpgradeIntent();
+    case STATE_CREATE_PASSPHRASE:        return getCreatePassphraseIntent();
+    case STATE_PROMPT_PASSPHRASE:        return getPromptPassphraseIntent();
+    case STATE_UPGRADE_DATABASE:         return getUpgradeDatabaseIntent();
+    case STATE_PROMPT_PUSH_REGISTRATION: return getPushRegistrationIntent();
+    case STATE_EXPERIENCE_UPGRADE:       return getExperienceUpgradeIntent();
     default:                             return null;
     }
   }
@@ -152,43 +151,43 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
       return STATE_CREATE_PASSPHRASE;
     } else if (locked) {
       return STATE_PROMPT_PASSPHRASE;
-  //  } else if (DatabaseUpgradeActivity.isUpdate(this)) {
-  //    return STATE_UPGRADE_DATABASE;
+    } else if (DatabaseUpgradeActivity.isUpdate(this)) {
+      return STATE_UPGRADE_DATABASE;
     } else if (!TextSecurePreferences.hasPromptedPushRegistration(this)) {
       return STATE_PROMPT_PUSH_REGISTRATION;
-  //  } else if (ExperienceUpgradeActivity.isUpdate(this)) {
-  //    return STATE_EXPERIENCE_UPGRADE;
+    } else if (ExperienceUpgradeActivity.isUpdate(this)) {
+      return STATE_EXPERIENCE_UPGRADE;
     } else {
       return STATE_NORMAL;
     }
   }
 
-//  private Intent getCreatePassphraseIntent() {
-//    return getRoutedIntent(PassphraseCreateActivity.class, getIntent());
-//  }
+  private Intent getCreatePassphraseIntent() {
+    return getRoutedIntent(PassphraseCreateActivity.class, getIntent());
+  }
 
- // private Intent getPromptPassphraseIntent() {
- //   return getRoutedIntent(PassphrasePromptActivity.class, getIntent());
- // }
+  private Intent getPromptPassphraseIntent() {
+    return getRoutedIntent(PassphrasePromptActivity.class, getIntent());
+  }
 
- // private Intent getUpgradeDatabaseIntent() {
-   // return getRoutedIntent(DatabaseUpgradeActivity.class,
-   //                        TextSecurePreferences.hasPromptedPushRegistration(this)
-   //                            ? getConversationListIntent()
-   //                            : getPushRegistrationIntent());
- // }
+  private Intent getUpgradeDatabaseIntent() {
+    return getRoutedIntent(DatabaseUpgradeActivity.class,
+                           TextSecurePreferences.hasPromptedPushRegistration(this)
+                               ? getConversationListIntent()
+                               : getPushRegistrationIntent());
+  }
 
-//  private Intent getExperienceUpgradeIntent() {
-//    return getRoutedIntent(ExperienceUpgradeActivity.class, getIntent());
-//  }
+  private Intent getExperienceUpgradeIntent() {
+    return getRoutedIntent(ExperienceUpgradeActivity.class, getIntent());
+  }
 
-//  private Intent getPushRegistrationIntent() {
-//    return getRoutedIntent(RegistrationActivity.class, getCreateProfileIntent());
-//  }
+  private Intent getPushRegistrationIntent() {
+    return getRoutedIntent(RegistrationActivity.class, getCreateProfileIntent());
+  }
 
- // private Intent getCreateProfileIntent() {
- //   return getRoutedIntent(CreateProfileActivity.class, getConversationListIntent());
- // }
+  private Intent getCreateProfileIntent() {
+    return getRoutedIntent(CreateProfileActivity.class, getConversationListIntent());
+  }
 
   private Intent getRoutedIntent(Class<?> destination, @Nullable Intent nextIntent) {
     final Intent intent = new Intent(this, destination);
@@ -196,9 +195,9 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     return intent;
   }
 
- // private Intent getConversationListIntent() {
- //   return new Intent(this, ConversationListActivity.class);
-//  }
+  private Intent getConversationListIntent() {
+    return new Intent(this, ConversationListActivity.class);
+  }
 
   private void initializeClearKeyReceiver() {
     Log.w(TAG, "initializeClearKeyReceiver()");
@@ -206,7 +205,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
       @Override
       public void onReceive(Context context, Intent intent) {
         Log.w(TAG, "onReceive() for clear key event");
-      //  onMasterSecretCleared();
+        onMasterSecretCleared();
       }
     };
 

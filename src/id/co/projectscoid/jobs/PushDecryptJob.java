@@ -1,50 +1,19 @@
 package id.co.projectscoid.jobs;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.util.Pair;
 
-import org.whispersystems.jobqueue.JobParameters;
-import org.whispersystems.libsignal.DuplicateMessageException;
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.InvalidKeyIdException;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.InvalidVersionException;
-import org.whispersystems.libsignal.LegacyMessageException;
-import org.whispersystems.libsignal.NoSessionException;
-import org.whispersystems.libsignal.UntrustedIdentityException;
-import org.whispersystems.libsignal.protocol.PreKeySignalMessage;
-import org.whispersystems.libsignal.state.SessionStore;
-import org.whispersystems.libsignal.state.SignalProtocolStore;
-import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.crypto.SignalServiceCipher;
-import org.whispersystems.signalservice.api.messages.SignalServiceContent;
-import org.whispersystems.signalservice.api.messages.SignalServiceDataMessage;
-import org.whispersystems.signalservice.api.messages.SignalServiceEnvelope;
-import org.whispersystems.signalservice.api.messages.SignalServiceGroup;
-import org.whispersystems.signalservice.api.messages.SignalServiceReceiptMessage;
-import org.whispersystems.signalservice.api.messages.calls.AnswerMessage;
-import org.whispersystems.signalservice.api.messages.calls.BusyMessage;
-import org.whispersystems.signalservice.api.messages.calls.HangupMessage;
-import org.whispersystems.signalservice.api.messages.calls.IceUpdateMessage;
-import org.whispersystems.signalservice.api.messages.calls.OfferMessage;
-import org.whispersystems.signalservice.api.messages.calls.SignalServiceCallMessage;
-import org.whispersystems.signalservice.api.messages.multidevice.ReadMessage;
-import org.whispersystems.signalservice.api.messages.multidevice.RequestMessage;
-import org.whispersystems.signalservice.api.messages.multidevice.SentTranscriptMessage;
-import org.whispersystems.signalservice.api.messages.multidevice.SignalServiceSyncMessage;
-import org.whispersystems.signalservice.api.messages.multidevice.VerifiedMessage;
-import org.whispersystems.signalservice.api.push.SignalServiceAddress;
-
-import java.security.MessageDigest;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import id.co.projectscoid.ApplicationContext;
+import id.co.projectscoid.ConversationListActivity;
+import id.co.projectscoid.R;
 import id.co.projectscoid.attachments.DatabaseAttachment;
 import id.co.projectscoid.attachments.PointerAttachment;
 import id.co.projectscoid.crypto.IdentityKeyUtil;
@@ -84,8 +53,42 @@ import id.co.projectscoid.util.Base64;
 import id.co.projectscoid.util.GroupUtil;
 import id.co.projectscoid.util.IdentityUtil;
 import id.co.projectscoid.util.TextSecurePreferences;
+import org.whispersystems.jobqueue.JobParameters;
+import org.whispersystems.libsignal.DuplicateMessageException;
+import org.whispersystems.libsignal.IdentityKey;
+import org.whispersystems.libsignal.InvalidKeyException;
+import org.whispersystems.libsignal.InvalidKeyIdException;
+import org.whispersystems.libsignal.InvalidMessageException;
+import org.whispersystems.libsignal.InvalidVersionException;
+import org.whispersystems.libsignal.LegacyMessageException;
+import org.whispersystems.libsignal.NoSessionException;
+import org.whispersystems.libsignal.UntrustedIdentityException;
+import org.whispersystems.libsignal.protocol.PreKeySignalMessage;
+import org.whispersystems.libsignal.state.SessionStore;
+import org.whispersystems.libsignal.state.SignalProtocolStore;
+import org.whispersystems.libsignal.util.guava.Optional;
+import org.whispersystems.signalservice.api.crypto.SignalServiceCipher;
+import org.whispersystems.signalservice.api.messages.SignalServiceContent;
+import org.whispersystems.signalservice.api.messages.SignalServiceDataMessage;
+import org.whispersystems.signalservice.api.messages.SignalServiceEnvelope;
+import org.whispersystems.signalservice.api.messages.SignalServiceGroup;
+import org.whispersystems.signalservice.api.messages.SignalServiceReceiptMessage;
+import org.whispersystems.signalservice.api.messages.calls.AnswerMessage;
+import org.whispersystems.signalservice.api.messages.calls.BusyMessage;
+import org.whispersystems.signalservice.api.messages.calls.HangupMessage;
+import org.whispersystems.signalservice.api.messages.calls.IceUpdateMessage;
+import org.whispersystems.signalservice.api.messages.calls.OfferMessage;
+import org.whispersystems.signalservice.api.messages.calls.SignalServiceCallMessage;
+import org.whispersystems.signalservice.api.messages.multidevice.ReadMessage;
+import org.whispersystems.signalservice.api.messages.multidevice.RequestMessage;
+import org.whispersystems.signalservice.api.messages.multidevice.SentTranscriptMessage;
+import org.whispersystems.signalservice.api.messages.multidevice.SignalServiceSyncMessage;
+import org.whispersystems.signalservice.api.messages.multidevice.VerifiedMessage;
+import org.whispersystems.signalservice.api.push.SignalServiceAddress;
 
-//import id.co.projectscoid.ConversationListActivity;
+import java.security.MessageDigest;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PushDecryptJob extends ContextJob {
 
@@ -122,7 +125,7 @@ public class PushDecryptJob extends ContextJob {
 
     if (TextSecurePreferences.getNeedsSqlCipherMigration(context)) {
       Log.w(TAG, "Skipping job, waiting for sqlcipher migration...");
-   /*   NotificationManagerCompat.from(context).notify(494949,
+      NotificationManagerCompat.from(context).notify(494949,
                                                      new NotificationCompat.Builder(context)
                                                          .setSmallIcon(R.drawable.icon_notification)
                                                          .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -131,7 +134,7 @@ public class PushDecryptJob extends ContextJob {
                                                          .setContentText(context.getString(R.string.PushDecryptJob_unlock_to_view_pending_messages))
                                                          .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), 0))
                                                          .setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_VIBRATE)
-                                                         .build()); */
+                                                         .build());
       return;
     }
 
@@ -205,7 +208,7 @@ public class PushDecryptJob extends ContextJob {
       }
 
       if (envelope.isPreKeySignalMessage()) {
-        //ApplicationContext.getInstance(context).getJobManager().add(new RefreshPreKeysJob(context));
+        ApplicationContext.getInstance(context).getJobManager().add(new RefreshPreKeysJob(context));
       }
     } catch (InvalidVersionException e) {
       Log.w(TAG, e);
@@ -378,9 +381,9 @@ public class PushDecryptJob extends ContextJob {
   private void handleUnknownGroupMessage(@NonNull SignalServiceEnvelope envelope,
                                          @NonNull SignalServiceGroup group)
   {
-    //ApplicationContext.getInstance(context)
-    //                  .getJobManager()
-    //                  .add(new RequestGroupInfoJob(context, envelope.getSource(), group.getGroupId()));
+    ApplicationContext.getInstance(context)
+                      .getJobManager()
+                      .add(new RequestGroupInfoJob(context, envelope.getSource(), group.getGroupId()));
   }
 
   private void handleExpirationUpdate(@NonNull SignalServiceEnvelope envelope,
@@ -459,21 +462,21 @@ public class PushDecryptJob extends ContextJob {
   private void handleSynchronizeRequestMessage(@NonNull RequestMessage message)
   {
     if (message.isContactsRequest()) {
-      //ApplicationContext.getInstance(context)
-      //                  .getJobManager()
-      //                  .add(new MultiDeviceContactUpdateJob(getContext()));
+      ApplicationContext.getInstance(context)
+                        .getJobManager()
+                        .add(new MultiDeviceContactUpdateJob(getContext()));
     }
 
     if (message.isGroupsRequest()) {
-      //ApplicationContext.getInstance(context)
-      //                  .getJobManager()
-      //                  .add(new MultiDeviceGroupUpdateJob(getContext()));
+      ApplicationContext.getInstance(context)
+                        .getJobManager()
+                        .add(new MultiDeviceGroupUpdateJob(getContext()));
     }
 
     if (message.isBlockedListRequest()) {
-   //   ApplicationContext.getInstance(context)
-    //                    .getJobManager()
-     //                   .add(new MultiDeviceBlockedUpdateJob(getContext()));
+      ApplicationContext.getInstance(context)
+                        .getJobManager()
+                        .add(new MultiDeviceBlockedUpdateJob(getContext()));
     }
 
     if (message.isConfigurationRequest()) {

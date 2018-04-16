@@ -1,16 +1,19 @@
 package id.co.projectscoid.service;
 
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+
+import id.co.projectscoid.ConversationListActivity;
+import id.co.projectscoid.R;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-//import id.co.projectscoid.ConversationListActivity;
 
 public class GenericForegroundService extends Service {
 
@@ -40,13 +43,13 @@ public class GenericForegroundService extends Service {
     String title = intent.getStringExtra(EXTRA_TITLE);
     assert title != null;
 
-  /*  if (foregroundCount.getAndIncrement() == 0) {
+    if (foregroundCount.getAndIncrement() == 0) {
       startForeground(NOTIFICATION_ID, new NotificationCompat.Builder(this)
           .setSmallIcon(R.drawable.ic_signal_grey_24dp)
           .setContentTitle(title)
           .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, ConversationListActivity.class), 0))
           .build());
-    } */
+    }
   }
 
   private void handleStop() {

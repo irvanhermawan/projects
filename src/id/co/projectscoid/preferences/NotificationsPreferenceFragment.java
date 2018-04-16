@@ -14,10 +14,13 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 
+import id.co.projectscoid.ApplicationPreferencesActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.components.SwitchPreferenceCompat;
 import id.co.projectscoid.notifications.MessageNotifier;
+import id.co.projectscoid.preferences.widgets.SignalPreference;
 import id.co.projectscoid.util.TextSecurePreferences;
+import org.w3c.dom.Text;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -96,7 +99,7 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
   @Override
   public void onResume() {
     super.onResume();
-  //  ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__notifications);
+    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__notifications);
   }
 
   @Override

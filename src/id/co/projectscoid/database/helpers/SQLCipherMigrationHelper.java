@@ -12,16 +12,21 @@ import android.util.Pair;
 
 import com.annimon.stream.function.BiFunction;
 
+import id.co.projectscoid.DatabaseUpgradeActivity;
+import id.co.projectscoid.R;
+import id.co.projectscoid.crypto.AsymmetricMasterCipher;
+import id.co.projectscoid.crypto.AttachmentSecretProvider;
+import id.co.projectscoid.crypto.MasterCipher;
+import id.co.projectscoid.crypto.MasterSecret;
+import id.co.projectscoid.crypto.MasterSecretUtil;
+import id.co.projectscoid.service.GenericForegroundService;
+import id.co.projectscoid.util.Base64;
+import id.co.projectscoid.util.TextSecurePreferences;
 import org.whispersystems.libsignal.InvalidMessageException;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
-import id.co.projectscoid.R;
-import id.co.projectscoid.crypto.AsymmetricMasterCipher;
-import id.co.projectscoid.crypto.MasterCipher;
-import id.co.projectscoid.service.GenericForegroundService;
 
 public class SQLCipherMigrationHelper {
 
@@ -49,7 +54,7 @@ public class SQLCipherMigrationHelper {
     }
   }
 
- /* public static void migrateCiphertext(@NonNull Context context,
+  public static void migrateCiphertext(@NonNull Context context,
                                        @NonNull MasterSecret masterSecret,
                                        @NonNull android.database.sqlite.SQLiteDatabase legacyDb,
                                        @NonNull net.sqlcipher.database.SQLiteDatabase modernDb,
@@ -130,9 +135,11 @@ public class SQLCipherMigrationHelper {
       });
 
       copyTable("thread", legacyDb, modernDb, (row, progress) -> {
+        Long snippetType = row.getAsLong("snippet_type");
+        if (snippetType == null) snippetType = 0L;
+
         Pair<Long, String> plaintext = getPlaintextBody(legacyCipher, legacyAsymmetricCipher,
-                                                        row.getAsLong("snippet_type"),
-                                                        row.getAsString("snippet"));
+                                                        snippetType, row.getAsString("snippet"));
 
         row.put("snippet", plaintext.second);
         row.put("snippet_type", plaintext.first);
@@ -170,7 +177,7 @@ public class SQLCipherMigrationHelper {
       modernDb.endTransaction();
       GenericForegroundService.stopForegroundTask(context);
     }
-  } */
+  }
 
   private static void copyTable(@NonNull String tableName,
                                 @NonNull android.database.sqlite.SQLiteDatabase legacyDb,

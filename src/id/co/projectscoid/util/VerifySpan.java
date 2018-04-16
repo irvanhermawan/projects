@@ -1,16 +1,16 @@
 package id.co.projectscoid.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
-import org.whispersystems.libsignal.IdentityKey;
-
+import id.co.projectscoid.VerifyIdentityActivity;
+import id.co.projectscoid.crypto.IdentityKeyParcelable;
 import id.co.projectscoid.database.Address;
 import id.co.projectscoid.database.documents.IdentityKeyMismatch;
-
-//import id.co.projectscoid.VerifyIdentityActivity;
+import org.whispersystems.libsignal.IdentityKey;
 
 public class VerifySpan extends ClickableSpan {
 
@@ -32,10 +32,10 @@ public class VerifySpan extends ClickableSpan {
 
   @Override
   public void onClick(View widget) {
-  /*  Intent intent = new Intent(context, VerifyIdentityActivity.class);
+    Intent intent = new Intent(context, VerifyIdentityActivity.class);
     intent.putExtra(VerifyIdentityActivity.ADDRESS_EXTRA, address);
     intent.putExtra(VerifyIdentityActivity.IDENTITY_EXTRA, new IdentityKeyParcelable(identityKey));
     intent.putExtra(VerifyIdentityActivity.VERIFIED_EXTRA, false);
-    context.startActivity(intent); */
+    context.startActivity(intent);
   }
 }

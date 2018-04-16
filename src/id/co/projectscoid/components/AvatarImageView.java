@@ -8,14 +8,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import id.co.projectscoid.R;
 import id.co.projectscoid.contacts.avatars.ContactColors;
 import id.co.projectscoid.contacts.avatars.GeneratedContactPhoto;
-import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.recipients.Recipient;
+
 public class AvatarImageView extends AppCompatImageView {
 
   private static final String TAG = AvatarImageView.class.getSimpleName();

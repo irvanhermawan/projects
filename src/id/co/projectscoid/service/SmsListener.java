@@ -28,13 +28,14 @@ import android.support.annotation.VisibleForTesting;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import id.co.projectscoid.ApplicationContext;
+import id.co.projectscoid.RegistrationActivity;
+import id.co.projectscoid.jobs.SmsReceiveJob;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
 
-//import id.co.projectscoid.RegistrationActivity;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SmsListener extends BroadcastReceiver {
 
@@ -142,7 +143,7 @@ public class SmsListener extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     Log.w("SMSListener", "Got SMS broadcast...");
-/*
+
     String messageBody = getSmsMessageBodyFromIntent(intent);
     if (SMS_RECEIVED_ACTION.equals(intent.getAction()) && isChallenge(context, messageBody)) {
       Log.w("SmsListener", "Got challenge!");
@@ -161,6 +162,6 @@ public class SmsListener extends BroadcastReceiver {
       ApplicationContext.getInstance(context).getJobManager().add(new SmsReceiveJob(context, pdus, subscriptionId));
 
       abortBroadcast();
-    }*/
+    }
   }
 }

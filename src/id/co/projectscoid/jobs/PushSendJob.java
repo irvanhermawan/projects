@@ -5,6 +5,19 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
+import id.co.projectscoid.ApplicationContext;
+import id.co.projectscoid.TextSecureExpiredException;
+import id.co.projectscoid.attachments.Attachment;
+import id.co.projectscoid.crypto.MasterSecret;
+import id.co.projectscoid.crypto.ProfileKeyUtil;
+import id.co.projectscoid.database.Address;
+import id.co.projectscoid.database.DatabaseFactory;
+import id.co.projectscoid.events.PartProgressEvent;
+import id.co.projectscoid.jobs.requirements.MasterSecretRequirement;
+import id.co.projectscoid.mms.PartAuthority;
+import id.co.projectscoid.notifications.MessageNotifier;
+import id.co.projectscoid.recipients.Recipient;
+import id.co.projectscoid.util.TextSecurePreferences;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
 import org.whispersystems.libsignal.util.guava.Optional;
@@ -16,17 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-
-import id.co.projectscoid.attachments.Attachment;
-import id.co.projectscoid.crypto.MasterSecret;
-import id.co.projectscoid.crypto.ProfileKeyUtil;
-import id.co.projectscoid.database.Address;
-import id.co.projectscoid.database.DatabaseFactory;
-import id.co.projectscoid.events.PartProgressEvent;
-import id.co.projectscoid.jobs.requirements.MasterSecretRequirement;
-import id.co.projectscoid.mms.PartAuthority;
-import id.co.projectscoid.notifications.MessageNotifier;
-import id.co.projectscoid.recipients.Recipient;
 
 public abstract class PushSendJob extends SendJob {
 
@@ -49,7 +51,7 @@ public abstract class PushSendJob extends SendJob {
 
   @Override
   protected final void onSend(MasterSecret masterSecret) throws Exception {
-  /*  if (TextSecurePreferences.getSignedPreKeyFailureCount(context) > 5) {
+    if (TextSecurePreferences.getSignedPreKeyFailureCount(context) > 5) {
       ApplicationContext.getInstance(context)
                         .getJobManager()
                         .add(new RotateSignedPreKeyJob(context));
@@ -57,7 +59,7 @@ public abstract class PushSendJob extends SendJob {
       throw new TextSecureExpiredException("Too many signed prekey rotation failures");
     }
 
-    onPushSend();*/
+    onPushSend();
   }
 
   protected Optional<byte[]> getProfileKey(@NonNull Recipient recipient) {
@@ -87,12 +89,9 @@ public abstract class PushSendJob extends SendJob {
                                                .withLength(attachment.getSize())
                                                .withFileName(attachment.getFileName())
                                                .withVoiceNote(attachment.isVoiceNote())
-                                               .withListener(new ProgressListener() {
-                                                 @Override
-                                                 public void onAttachmentProgress(long total, long progress) {
-                                                   EventBus.getDefault().postSticky(new PartProgressEvent(attachment, total, progress));
-                                                 }
-                                               })
+                                               .withWidth(attachment.getWidth())
+                                               .withHeight(attachment.getHeight())
+                                               .withListener((total, progress) -> EventBus.getDefault().postSticky(new PartProgressEvent(attachment, total, progress)))
                                                .build());
       } catch (IOException ioe) {
         Log.w(TAG, "Couldn't open attachment", ioe);

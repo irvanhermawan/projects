@@ -10,9 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import id.co.projectscoid.util.ViewUtil;
+
+import java.util.List;
 
 public class TransportOptionsAdapter extends BaseAdapter {
 

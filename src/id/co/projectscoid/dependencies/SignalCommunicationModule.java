@@ -4,16 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
-import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
-import org.whispersystems.signalservice.api.SignalServiceMessageReceiver;
-import org.whispersystems.signalservice.api.SignalServiceMessageSender;
-import org.whispersystems.signalservice.api.util.CredentialsProvider;
-import org.whispersystems.signalservice.api.websocket.ConnectivityListener;
-
-import dagger.Module;
-import dagger.Provides;
 import id.co.projectscoid.BuildConfig;
+import id.co.projectscoid.CreateProfileActivity;
+import id.co.projectscoid.DeviceListFragment;
 import id.co.projectscoid.crypto.storage.SignalProtocolStoreImpl;
 import id.co.projectscoid.events.ReminderUpdateEvent;
 import id.co.projectscoid.jobs.AttachmentDownloadJob;
@@ -41,14 +34,21 @@ import id.co.projectscoid.jobs.RetrieveProfileJob;
 import id.co.projectscoid.jobs.RotateSignedPreKeyJob;
 import id.co.projectscoid.jobs.SendReadReceiptJob;
 import id.co.projectscoid.preferences.AppProtectionPreferenceFragment;
+import id.co.projectscoid.preferences.SmsMmsPreferenceFragment;
 import id.co.projectscoid.push.SecurityEventListener;
 import id.co.projectscoid.push.SignalServiceNetworkAccess;
 import id.co.projectscoid.service.MessageRetrievalService;
 import id.co.projectscoid.service.WebRtcCallService;
 import id.co.projectscoid.util.TextSecurePreferences;
+import org.whispersystems.libsignal.util.guava.Optional;
+import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import org.whispersystems.signalservice.api.SignalServiceMessageReceiver;
+import org.whispersystems.signalservice.api.SignalServiceMessageSender;
+import org.whispersystems.signalservice.api.util.CredentialsProvider;
+import org.whispersystems.signalservice.api.websocket.ConnectivityListener;
 
-//import id.co.projectscoid.CreateProfileActivity;
-//import id.co.projectscoid.DeviceListFragment;
+import dagger.Module;
+import dagger.Provides;
 
 @Module(complete = false, injects = {CleanPreKeysJob.class,
                                      CreateSignedPreKeyJob.class,
@@ -63,7 +63,7 @@ import id.co.projectscoid.util.TextSecurePreferences;
                                      MultiDeviceGroupUpdateJob.class,
                                      MultiDeviceReadUpdateJob.class,
                                      MultiDeviceBlockedUpdateJob.class,
-                                   //  DeviceListFragment.class,
+                                     DeviceListFragment.class,
                                      RefreshAttributesJob.class,
                                      GcmRefreshJob.class,
                                      RequestGroupInfoJob.class,
@@ -73,7 +73,7 @@ import id.co.projectscoid.util.TextSecurePreferences;
                                      WebRtcCallService.class,
                                      RetrieveProfileJob.class,
                                      MultiDeviceVerifiedUpdateJob.class,
-                                   //  CreateProfileActivity.class,
+                                     CreateProfileActivity.class,
                                      RetrieveProfileAvatarJob.class,
                                      MultiDeviceProfileKeyUpdateJob.class,
                                      SendReadReceiptJob.class,

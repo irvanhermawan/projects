@@ -37,8 +37,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import id.co.projectscoid.mms.GlideApp;
+
 import id.co.projectscoid.R;
+import id.co.projectscoid.mms.GlideApp;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.recipients.RecipientModifiedListener;
 import id.co.projectscoid.service.WebRtcCallService;

@@ -17,15 +17,11 @@ import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
 import id.co.projectscoid.ApplicationContext;
+import id.co.projectscoid.ApplicationPreferencesActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.backup.BackupDialog;
+import id.co.projectscoid.backup.FullBackupBase;
 import id.co.projectscoid.backup.FullBackupBase.BackupEvent;
 import id.co.projectscoid.components.SwitchPreferenceCompat;
 import id.co.projectscoid.jobs.LocalBackupJob;
@@ -34,6 +30,11 @@ import id.co.projectscoid.preferences.widgets.ProgressPreference;
 import id.co.projectscoid.util.BackupUtil;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Trimmer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
   private static final String TAG = ChatsPreferenceFragment.class.getSimpleName();
@@ -74,7 +75,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-  //  ((ApplicationPreferencesActivity)getActivity()).getSupportActionBar().setTitle(R.string.preferences__chats);
+    ((ApplicationPreferencesActivity)getActivity()).getSupportActionBar().setTitle(R.string.preferences__chats);
     setMediaDownloadSummaries();
     setBackupSummary();
   }

@@ -4,23 +4,23 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import id.co.projectscoid.database.AttachmentDatabase;
+import id.co.projectscoid.util.Base64;
 import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.messages.SignalServiceAttachment;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import id.co.projectscoid.database.AttachmentDatabase;
-import id.co.projectscoid.util.Base64;
-
 public class PointerAttachment extends Attachment {
 
   private PointerAttachment(@NonNull String contentType, int transferState, long size,
                            @Nullable String fileName,  @NonNull String location,
                            @NonNull String key, @NonNull String relay,
-                           @Nullable byte[] digest, boolean voiceNote)
+                           @Nullable byte[] digest, boolean voiceNote,
+                            int width, int height)
   {
-    super(contentType, transferState, size, fileName, location, key, relay, digest, null, voiceNote);
+    super(contentType, transferState, size, fileName, location, key, relay, digest, null, voiceNote, width, height);
   }
 
   @Nullable
@@ -51,7 +51,9 @@ public class PointerAttachment extends Attachment {
                                             String.valueOf(pointer.asPointer().getId()),
                                             encodedKey, pointer.asPointer().getRelay().orNull(),
                                             pointer.asPointer().getDigest().orNull(),
-                                            pointer.asPointer().getVoiceNote()));
+                                            pointer.asPointer().getVoiceNote(),
+                                            pointer.asPointer().getWidth(),
+                                            pointer.asPointer().getHeight()));
         }
       }
     }

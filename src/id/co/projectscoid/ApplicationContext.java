@@ -25,29 +25,15 @@ import android.util.Log;
 
 import com.google.android.gms.security.ProviderInstaller;
 
-import org.webrtc.PeerConnectionFactory;
-import org.webrtc.PeerConnectionFactory.InitializationOptions;
-import org.webrtc.voiceengine.WebRtcAudioManager;
-import org.webrtc.voiceengine.WebRtcAudioUtils;
-import org.whispersystems.jobqueue.JobManager;
-import org.whispersystems.jobqueue.dependencies.DependencyInjector;
-import org.whispersystems.jobqueue.persistence.JavaJobSerializer;
-import org.whispersystems.libsignal.logging.SignalProtocolLoggerProvider;
-import org.whispersystems.libsignal.util.AndroidSignalProtocolLogger;
-import id.co.projectscoid.libprojects.ProjectsProtocolLoggerProvider;
-import id.co.projectscoid.util.AndroidProjetctsProtocolLogger;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import dagger.ObjectGraph;
 import id.co.projectscoid.crypto.PRNGFixes;
 import id.co.projectscoid.dependencies.AxolotlStorageModule;
 import id.co.projectscoid.dependencies.InjectableType;
 import id.co.projectscoid.dependencies.SignalCommunicationModule;
 import id.co.projectscoid.jobs.CreateSignedPreKeyJob;
 import id.co.projectscoid.jobs.GcmRefreshJob;
+import id.co.projectscoid.jobs.requirements.MasterSecretRequirementProvider;
+import id.co.projectscoid.jobs.requirements.ServiceRequirementProvider;
+import id.co.projectscoid.jobs.requirements.SqlCipherMigrationRequirementProvider;
 import id.co.projectscoid.push.SignalServiceNetworkAccess;
 import id.co.projectscoid.service.DirectoryRefreshListener;
 import id.co.projectscoid.service.ExpiringMessageManager;
@@ -55,6 +41,22 @@ import id.co.projectscoid.service.LocalBackupListener;
 import id.co.projectscoid.service.RotateSignedPreKeyListener;
 import id.co.projectscoid.service.UpdateApkRefreshListener;
 import id.co.projectscoid.util.TextSecurePreferences;
+import org.webrtc.PeerConnectionFactory;
+import org.webrtc.PeerConnectionFactory.InitializationOptions;
+import org.webrtc.voiceengine.WebRtcAudioManager;
+import org.webrtc.voiceengine.WebRtcAudioUtils;
+import org.whispersystems.jobqueue.JobManager;
+import org.whispersystems.jobqueue.dependencies.DependencyInjector;
+import org.whispersystems.jobqueue.persistence.JavaJobSerializer;
+import org.whispersystems.jobqueue.requirements.NetworkRequirementProvider;
+import org.whispersystems.libsignal.logging.SignalProtocolLoggerProvider;
+import org.whispersystems.libsignal.util.AndroidSignalProtocolLogger;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import dagger.ObjectGraph;
 
 /**
  * Will be called once when the TextSecure process is created.
@@ -79,17 +81,16 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
   @Override
   public void onCreate() {
     super.onCreate();
-   // initializeRandomNumberFix();
+    initializeRandomNumberFix();
     initializeLogging();
     initializeDependencyInjection();
     initializeJobManager();
-  //  initializeExpiringMessageManager();
-
-  //  initializeGcmCheck();
+    initializeExpiringMessageManager();
+    initializeGcmCheck();
     initializeSignedPreKeyCheck();
     initializePeriodicTasks();
     initializeCircumvention();
-  //  initializeWebRtc();
+    initializeWebRtc();
   }
 
   @Override
@@ -112,7 +113,7 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
   }
 
   private void initializeLogging() {
-    ProjectsProtocolLoggerProvider.setProvider(new AndroidProjetctsProtocolLogger());
+    SignalProtocolLoggerProvider.setProvider(new AndroidSignalProtocolLogger());
   }
 
   private void initializeJobManager() {
@@ -120,10 +121,10 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
                                 .withName("TextSecureJobs")
                                 .withDependencyInjector(this)
                                 .withJobSerializer(new JavaJobSerializer())
-                                .withRequirementProviders(//new MasterSecretRequirementProvider(this),
-                                                         // new ServiceRequirementProvider(this),
-                                                        //  new NetworkRequirementProvider(this)//,
-                                                         /* new SqlCipherMigrationRequirementProvider() */)
+                                .withRequirementProviders(new MasterSecretRequirementProvider(this),
+                                                          new ServiceRequirementProvider(this),
+                                                          new NetworkRequirementProvider(this),
+                                                          new SqlCipherMigrationRequirementProvider())
                                 .withConsumerThreads(5)
                                 .build();
   }

@@ -40,9 +40,9 @@
 
             <ViewStub
                     android:id="@+id/image_view_stub"
-                    android:layout_width="@dimen/media_bubble_height"
-                    android:layout_height="@dimen/media_bubble_height"
-                    android:layout="@layout/conversation_item_sent_thumbnail"/>
+                    android:layout_width="@dimen/media_bubble_default_dimens"
+                    android:layout_height="@dimen/media_bubble_default_dimens"
+                    android:layout="@layout/conversation_item_sent_thumbnail" />
 
             <ViewStub
                     android:id="@+id/audio_view_stub"
@@ -66,7 +66,7 @@
                     android:textColorLink="?conversation_item_sent_text_primary_color"
                     android:textSize="@dimen/conversation_item_body_text_size"
                     app:scaleEmojis="true"
-                    tools:text="Mango pice lorem ipsum"/>
+                    tools:text="Mango pickle lorem ipsum"/>
 
             <LinearLayout android:layout_width="wrap_content"
                           android:layout_height="wrap_content"

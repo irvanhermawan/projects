@@ -98,11 +98,6 @@ public class Recipient implements RecipientModifiedListener {
     if (address == null) throw new AssertionError(address);
     return provider.getRecipient(context, address, Optional.absent(), Optional.absent(), asynchronous);
   }
-  public static @NonNull Recipient from1(@NonNull Context context, @NonNull int address, boolean asynchronous) {
-  //  if (address == null) throw new AssertionError(address);
-    return null;
-   // return provider.getRecipient1(context, address, Optional.absent(), Optional.absent(), asynchronous);
-  }
 
   @SuppressWarnings("ConstantConditions")
   public static @NonNull Recipient from(@NonNull Context context, @NonNull Address address, @NonNull Optional<RecipientSettings> settings, @NonNull Optional<GroupDatabase.GroupRecord> groupRecord, boolean asynchronous) {

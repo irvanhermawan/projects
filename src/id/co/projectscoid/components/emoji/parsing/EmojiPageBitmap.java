@@ -9,9 +9,10 @@ import android.util.Log;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import id.co.projectscoid.components.emoji.EmojiPageModel;
+import id.co.projectscoid.mms.GlideApp;
 import id.co.projectscoid.util.ListenableFutureTask;
 import id.co.projectscoid.util.Util;
-import id.co.projectscoid.mms.GlideApp;
+
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.Callable;

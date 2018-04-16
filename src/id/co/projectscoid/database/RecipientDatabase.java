@@ -33,7 +33,6 @@ public class RecipientDatabase extends Database {
 
           static final String TABLE_NAME              = "recipient_preferences";
   private static final String ID                      = "_id";
-  private static final String ACCOUNT_ID              = "account_id";
           static final String ADDRESS                 = "recipient_ids";
   private static final String BLOCK                   = "block";
   private static final String NOTIFICATION            = "notification";
@@ -104,7 +103,6 @@ public class RecipientDatabase extends Database {
   public static final String CREATE_TABLE =
       "CREATE TABLE " + TABLE_NAME +
           " (" + ID + " INTEGER PRIMARY KEY, " +
-          ACCOUNT_ID + " INTEGER DEFAULT 0, " +
           ADDRESS + " TEXT UNIQUE, " +
           BLOCK + " INTEGER DEFAULT 0," +
           NOTIFICATION + " TEXT DEFAULT NULL, " +

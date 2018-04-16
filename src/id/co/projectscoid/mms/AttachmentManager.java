@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,15 +42,9 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
-import org.whispersystems.libsignal.util.guava.Optional;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
+import id.co.projectscoid.MediaPreviewActivity;
 import id.co.projectscoid.R;
+import id.co.projectscoid.attachments.Attachment;
 import id.co.projectscoid.components.AudioView;
 import id.co.projectscoid.components.DocumentView;
 import id.co.projectscoid.components.RemovableEditableMediaView;
@@ -67,6 +62,13 @@ import id.co.projectscoid.util.concurrent.AssertedSuccessListener;
 import id.co.projectscoid.util.concurrent.ListenableFuture;
 import id.co.projectscoid.util.concurrent.ListenableFuture.Listener;
 import id.co.projectscoid.util.views.Stub;
+import org.whispersystems.libsignal.util.guava.Optional;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class AttachmentManager {
@@ -204,11 +206,13 @@ public class AttachmentManager {
   public void setMedia(@NonNull final GlideRequests glideRequests,
                        @NonNull final Uri uri,
                        @NonNull final MediaType mediaType,
-                       @NonNull final MediaConstraints constraints)
+                       @NonNull final MediaConstraints constraints,
+                                final int width,
+                                final int height)
   {
     inflateStub();
 
-            new AsyncTask<Void, Void, Slide>() {
+    new AsyncTask<Void, Void, Slide>() {
       @Override
       protected void onPreExecute() {
         thumbnail.clear(glideRequests);
@@ -220,11 +224,11 @@ public class AttachmentManager {
       protected @Nullable Slide doInBackground(Void... params) {
         try {
           if (PartAuthority.isLocalUri(uri)) {
-            return getManuallyCalculatedSlideInfo(uri);
+            return getManuallyCalculatedSlideInfo(uri, width, height);
           } else {
-            Slide result = getContentResolverSlideInfo(uri);
+            Slide result = getContentResolverSlideInfo(uri, width, height);
 
-            if (result == null) return getManuallyCalculatedSlideInfo(uri);
+            if (result == null) return getManuallyCalculatedSlideInfo(uri, width, height);
             else                return result;
           }
         } catch (IOException e) {
@@ -256,7 +260,8 @@ public class AttachmentManager {
             documentView.setDocument((DocumentSlide) slide, false);
             removableMediaView.display(documentView, false);
           } else {
-            thumbnail.setImageResource(glideRequests, slide, false, true);
+            Attachment attachment = slide.asAttachment();
+            thumbnail.setImageResource(glideRequests, slide, false, true, attachment.getWidth(), attachment.getHeight());
             removableMediaView.display(thumbnail, mediaType == MediaType.IMAGE);
           }
 
@@ -264,7 +269,7 @@ public class AttachmentManager {
         }
       }
 
-      private @Nullable Slide getContentResolverSlideInfo(Uri uri) {
+      private @Nullable Slide getContentResolverSlideInfo(Uri uri, int width, int height) {
         Cursor cursor = null;
         long   start  = System.currentTimeMillis();
 
@@ -276,8 +281,14 @@ public class AttachmentManager {
             long   fileSize = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE));
             String mimeType = context.getContentResolver().getType(uri);
 
+            if (width == 0 || height == 0) {
+              Pair<Integer, Integer> dimens = MediaUtil.getDimensions(context, mimeType, uri);
+              width  = dimens.first;
+              height = dimens.second;
+            }
+
             Log.w(TAG, "remote slide with size " + fileSize + " took " + (System.currentTimeMillis() - start) + "ms");
-            return mediaType.createSlide(context, uri, fileName, mimeType, fileSize);
+            return mediaType.createSlide(context, uri, fileName, mimeType, fileSize, width, height);
           }
         } finally {
           if (cursor != null) cursor.close();
@@ -286,7 +297,7 @@ public class AttachmentManager {
         return null;
       }
 
-      private @NonNull Slide getManuallyCalculatedSlideInfo(Uri uri) throws IOException {
+      private @NonNull Slide getManuallyCalculatedSlideInfo(Uri uri, int width, int height) throws IOException {
         long start      = System.currentTimeMillis();
         Long mediaSize  = null;
         String fileName = null;
@@ -302,8 +313,18 @@ public class AttachmentManager {
           mediaSize = MediaUtil.getMediaSize(context, uri);
         }
 
+        if (mimeType == null) {
+          mimeType = MediaUtil.getMimeType(context, uri);
+        }
+
+        if (width == 0 || height == 0) {
+          Pair<Integer, Integer> dimens = MediaUtil.getDimensions(context, mimeType, uri);
+          width  = dimens.first;
+          height = dimens.second;
+        }
+
         Log.w(TAG, "local slide with size " + mediaSize + " took " + (System.currentTimeMillis() - start) + "ms");
-        return mediaType.createSlide(context, uri, fileName, mimeType, mediaSize);
+        return mediaType.createSlide(context, uri, fileName, mimeType, mediaSize, width, height);
       }
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
@@ -447,7 +468,7 @@ public class AttachmentManager {
   }
 
   private void previewImageDraft(final @NonNull Slide slide) {
-  /*  if (MediaPreviewActivity.isContentTypeSupported(slide.getContentType()) && slide.getUri() != null) {
+    if (MediaPreviewActivity.isContentTypeSupported(slide.getContentType()) && slide.getUri() != null) {
       Intent intent = new Intent(context, MediaPreviewActivity.class);
       intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
       intent.putExtra(MediaPreviewActivity.SIZE_EXTRA, slide.asAttachment().getSize());
@@ -455,7 +476,7 @@ public class AttachmentManager {
       intent.setDataAndType(slide.getUri(), slide.getContentType());
 
       context.startActivity(intent);
-    }*/
+    }
   }
 
   private class ThumbnailClickListener implements View.OnClickListener {
@@ -493,15 +514,17 @@ public class AttachmentManager {
                                       @NonNull  Uri     uri,
                                       @Nullable String fileName,
                                       @Nullable String mimeType,
-                                                long    dataSize)
+                                                long    dataSize,
+                                                int     width,
+                                                int     height)
     {
       if (mimeType == null) {
         mimeType = "application/octet-stream";
       }
 
       switch (this) {
-      case IMAGE:    return new ImageSlide(context, uri, dataSize);
-      case GIF:      return new GifSlide(context, uri, dataSize);
+      case IMAGE:    return new ImageSlide(context, uri, dataSize, width, height);
+      case GIF:      return new GifSlide(context, uri, dataSize, width, height);
       case AUDIO:    return new AudioSlide(context, uri, dataSize, false);
       case VIDEO:    return new VideoSlide(context, uri, dataSize);
       case DOCUMENT: return new DocumentSlide(context, uri, mimeType, dataSize, fileName);

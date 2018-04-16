@@ -17,8 +17,8 @@ import android.widget.FrameLayout;
 import id.co.projectscoid.R;
 import id.co.projectscoid.database.CursorRecyclerViewAdapter;
 import id.co.projectscoid.database.MediaDatabase;
-import id.co.projectscoid.mms.Slide;
 import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.mms.Slide;
 import id.co.projectscoid.util.MediaUtil;
 import id.co.projectscoid.util.ViewUtil;
 

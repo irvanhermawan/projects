@@ -18,10 +18,13 @@ package id.co.projectscoid;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,20 +36,16 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.whispersystems.libsignal.util.guava.Optional;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
+import id.co.projectscoid.attachments.Attachment;
 import id.co.projectscoid.attachments.DatabaseAttachment;
 import id.co.projectscoid.components.AlertView;
 import id.co.projectscoid.components.AudioView;
@@ -58,6 +57,7 @@ import id.co.projectscoid.components.ThumbnailView;
 import id.co.projectscoid.database.AttachmentDatabase;
 import id.co.projectscoid.database.DatabaseFactory;
 import id.co.projectscoid.database.MmsDatabase;
+import id.co.projectscoid.database.MmsSmsDatabase;
 import id.co.projectscoid.database.SmsDatabase;
 import id.co.projectscoid.database.documents.IdentityKeyMismatch;
 import id.co.projectscoid.database.model.MediaMmsMessageRecord;
@@ -67,9 +67,10 @@ import id.co.projectscoid.jobs.AttachmentDownloadJob;
 import id.co.projectscoid.jobs.MmsDownloadJob;
 import id.co.projectscoid.jobs.MmsSendJob;
 import id.co.projectscoid.jobs.SmsSendJob;
+import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.mms.PartAuthority;
 import id.co.projectscoid.mms.Slide;
 import id.co.projectscoid.mms.SlideClickListener;
-import id.co.projectscoid.mms.GlideRequests;
 import id.co.projectscoid.permissions.Permissions;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.recipients.RecipientModifiedListener;
@@ -83,6 +84,12 @@ import id.co.projectscoid.util.Util;
 import id.co.projectscoid.util.dualsim.SubscriptionInfoCompat;
 import id.co.projectscoid.util.dualsim.SubscriptionManagerCompat;
 import id.co.projectscoid.util.views.Stub;
+import org.whispersystems.libsignal.util.guava.Optional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * A view that displays an individual conversation item within a conversation
@@ -379,9 +386,14 @@ public class ConversationItem extends LinearLayout
       if (documentViewStub.resolved()) documentViewStub.get().setVisibility(View.GONE);
 
       //noinspection ConstantConditions
+      Slide      thumbnailSlide = ((MmsMessageRecord) messageRecord).getSlideDeck().getThumbnailSlide();
+      Attachment attachment     = thumbnailSlide.asAttachment();
       mediaThumbnailStub.get().setImageResource(glideRequests,
-                                                ((MmsMessageRecord)messageRecord).getSlideDeck().getThumbnailSlide(),
-                                                showControls, false);
+                                                thumbnailSlide,
+                                                showControls,
+                                                false,
+                                                attachment.getWidth(),
+                                                attachment.getHeight());
       mediaThumbnailStub.get().setThumbnailClickListener(new ThumbnailClickListener());
       mediaThumbnailStub.get().setDownloadClickListener(downloadClickListener);
       mediaThumbnailStub.get().setOnLongClickListener(passthroughClickListener);
@@ -556,7 +568,7 @@ public class ConversationItem extends LinearLayout
       throw new AssertionError("Identity mismatch count: " + mismatches.size());
     }
 
-   // new ConfirmIdentityDialog(context, messageRecord, mismatches.get(0)).show();
+    new ConfirmIdentityDialog(context, messageRecord, mismatches.get(0)).show();
   }
 
   @Override
@@ -593,7 +605,7 @@ public class ConversationItem extends LinearLayout
 
   private class ThumbnailClickListener implements SlideClickListener {
     public void onClick(final View v, final Slide slide) {
-     /* if (shouldInterceptClicks(messageRecord) || !batchSelected.isEmpty()) {
+      if (shouldInterceptClicks(messageRecord) || !batchSelected.isEmpty()) {
         performClick();
       } else if (MediaPreviewActivity.isContentTypeSupported(slide.getContentType()) && slide.getUri() != null) {
         Intent intent = new Intent(context, MediaPreviewActivity.class);
@@ -619,11 +631,11 @@ public class ConversationItem extends LinearLayout
           Log.w(TAG, "No activity existed to view the media.");
           Toast.makeText(context, R.string.ConversationItem_unable_to_open_media, Toast.LENGTH_LONG).show();
         }
-      }*/
+      }
     }
   }
 
-  private class PassthroughClickListener implements OnLongClickListener, OnClickListener {
+  private class PassthroughClickListener implements View.OnLongClickListener, View.OnClickListener {
 
     @Override
     public boolean onLongClick(View v) {
@@ -640,7 +652,7 @@ public class ConversationItem extends LinearLayout
     }
   }
 
-  private class ClickListener implements OnClickListener {
+  private class ClickListener implements View.OnClickListener {
     private OnClickListener parent;
 
     ClickListener(@Nullable OnClickListener parent) {
@@ -648,7 +660,7 @@ public class ConversationItem extends LinearLayout
     }
 
     public void onClick(View v) {
-     /* if (!shouldInterceptClicks(messageRecord) && parent != null) {
+      if (!shouldInterceptClicks(messageRecord) && parent != null) {
         parent.onClick(v);
       } else if (messageRecord.isFailed()) {
         Intent intent = new Intent(context, MessageDetailsActivity.class);
@@ -662,7 +674,7 @@ public class ConversationItem extends LinearLayout
         handleApproveIdentity();
       } else if (messageRecord.isPendingInsecureSmsFallback()) {
         handleMessageApproval();
-      } */
+      }
     }
   }
 

@@ -54,7 +54,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   }
 
   private void initializeScreenshotSecurity() {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH &&
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
             TextSecurePreferences.isScreenSecurityEnabled(this))
     {
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -89,7 +89,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
   @TargetApi(VERSION_CODES.LOLLIPOP)
   protected void setStatusBarColor(int color) {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       getWindow().setStatusBarColor(color);
     }
   }

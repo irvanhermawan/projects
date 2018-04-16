@@ -27,8 +27,9 @@ import com.bumptech.glide.signature.MediaStoreSignature;
 import id.co.projectscoid.R;
 import id.co.projectscoid.database.CursorRecyclerViewAdapter;
 import id.co.projectscoid.database.loaders.RecentPhotosLoader;
-import id.co.projectscoid.util.ViewUtil;
 import id.co.projectscoid.mms.GlideApp;
+import id.co.projectscoid.util.ViewUtil;
+
 public class RecentPhotoViewRail extends FrameLayout implements LoaderManager.LoaderCallbacks<Cursor> {
 
   @NonNull  private final RecyclerView          recyclerView;

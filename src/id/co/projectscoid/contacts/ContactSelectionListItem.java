@@ -12,10 +12,10 @@ import android.widget.TextView;
 import id.co.projectscoid.R;
 import id.co.projectscoid.components.AvatarImageView;
 import id.co.projectscoid.database.Address;
+import id.co.projectscoid.mms.GlideRequests;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.recipients.RecipientModifiedListener;
 import id.co.projectscoid.util.GroupUtil;
-import id.co.projectscoid.mms.GlideRequests;
 import id.co.projectscoid.util.Util;
 import id.co.projectscoid.util.ViewUtil;
 

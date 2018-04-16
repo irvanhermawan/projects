@@ -27,22 +27,13 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.annimon.stream.Stream;
+import com.google.android.mms.pdu_alt.CharacterSets;
 import com.google.android.mms.pdu_alt.NotificationInd;
 import com.google.android.mms.pdu_alt.PduHeaders;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
-import org.whispersystems.libsignal.util.guava.Optional;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import id.co.projectscoid.ApplicationContext;
 import id.co.projectscoid.attachments.Attachment;
 import id.co.projectscoid.attachments.DatabaseAttachment;
 import id.co.projectscoid.attachments.MmsNotificationAttachment;
@@ -54,6 +45,7 @@ import id.co.projectscoid.database.helpers.SQLCipherOpenHelper;
 import id.co.projectscoid.database.model.MediaMmsMessageRecord;
 import id.co.projectscoid.database.model.MessageRecord;
 import id.co.projectscoid.database.model.NotificationMmsMessageRecord;
+import id.co.projectscoid.jobs.TrimThreadJob;
 import id.co.projectscoid.mms.IncomingMediaMessage;
 import id.co.projectscoid.mms.MmsException;
 import id.co.projectscoid.mms.OutgoingExpirationUpdateMessage;
@@ -66,8 +58,18 @@ import id.co.projectscoid.recipients.RecipientFormattingException;
 import id.co.projectscoid.util.JsonUtils;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
+import org.whispersystems.jobqueue.JobManager;
+import org.whispersystems.libsignal.util.guava.Optional;
 
-//import id.co.projectscoid.ApplicationContext;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MmsDatabase extends MessagingDatabase {
 
@@ -135,6 +137,8 @@ public class MmsDatabase extends MessagingDatabase {
       AttachmentDatabase.DIGEST,
       AttachmentDatabase.FAST_PREFLIGHT_ID,
       AttachmentDatabase.VOICE_NOTE,
+      AttachmentDatabase.WIDTH,
+      AttachmentDatabase.HEIGHT,
       AttachmentDatabase.CONTENT_DISPOSITION,
       AttachmentDatabase.NAME,
       AttachmentDatabase.TRANSFER_STATE
@@ -145,11 +149,11 @@ public class MmsDatabase extends MessagingDatabase {
   private final EarlyReceiptCache earlyDeliveryReceiptCache = new EarlyReceiptCache();
   private final EarlyReceiptCache earlyReadReceiptCache     = new EarlyReceiptCache();
 
-  //private final JobManager jobManager;
+  private final JobManager jobManager;
 
   public MmsDatabase(Context context, SQLCipherOpenHelper databaseHelper) {
     super(context, databaseHelper);
-   // this.jobManager = ApplicationContext.getInstance(context).getJobManager();
+    this.jobManager = ApplicationContext.getInstance(context).getJobManager();
   }
 
   @Override
@@ -600,7 +604,9 @@ public class MmsDatabase extends MessagingDatabase {
                                                databaseAttachment.getRelay(),
                                                databaseAttachment.getDigest(),
                                                databaseAttachment.getFastPreflightId(),
-                                               databaseAttachment.isVoiceNote()));
+                                               databaseAttachment.isVoiceNote(),
+                                               databaseAttachment.getWidth(),
+                                               databaseAttachment.getHeight()));
       }
 
       return insertMediaMessage(request.getBody(),
@@ -660,7 +666,7 @@ public class MmsDatabase extends MessagingDatabase {
     }
 
     notifyConversationListeners(threadId);
-    //jobManager.add(new TrimThreadJob(context, threadId));
+    jobManager.add(new TrimThreadJob(context, threadId));
 
     return Optional.of(new InsertResult(messageId, threadId));
   }
@@ -736,12 +742,11 @@ public class MmsDatabase extends MessagingDatabase {
   public void markIncomingNotificationReceived(long threadId) {
     notifyConversationListeners(threadId);
     DatabaseFactory.getThreadDatabase(context).update(threadId, true);
-
     if (id.co.projectscoid.util.Util.isDefaultSmsProvider(context)) {
       DatabaseFactory.getThreadDatabase(context).incrementUnread(threadId, 1);
     }
 
-    //jobManager.add(new TrimThreadJob(context, threadId));
+    jobManager.add(new TrimThreadJob(context, threadId));
   }
 
   public long insertMessageOutbox(@NonNull OutgoingMediaMessage message,
@@ -795,7 +800,7 @@ public class MmsDatabase extends MessagingDatabase {
 
     DatabaseFactory.getThreadDatabase(context).setLastSeen(threadId);
     DatabaseFactory.getThreadDatabase(context).setHasSent(threadId, true);
-    //jobManager.add(new TrimThreadJob(context, threadId));
+    jobManager.add(new TrimThreadJob(context, threadId));
 
     return messageId;
   }
@@ -1024,7 +1029,6 @@ public class MmsDatabase extends MessagingDatabase {
   public class Reader {
 
     private final Cursor cursor;
-
     public Reader(Cursor cursor) {
       this.cursor = cursor;
     }
@@ -1032,7 +1036,6 @@ public class MmsDatabase extends MessagingDatabase {
     public MessageRecord getNext() {
       if (cursor == null || !cursor.moveToNext())
         return null;
-
       return getCurrent();
     }
 
@@ -1046,6 +1049,14 @@ public class MmsDatabase extends MessagingDatabase {
       }
     }
 
+
+    public byte[] toIsoBytes(String isoString) {
+      try {
+        return isoString.getBytes(CharacterSets.MIMENAME_ISO_8859_1);
+      } catch (UnsupportedEncodingException e) {
+        throw new AssertionError("ISO_8859_1 must be supported!");
+      }
+    }
     private NotificationMmsMessageRecord getNotificationMmsMessageRecord(Cursor cursor) {
       long      id                   = cursor.getLong(cursor.getColumnIndexOrThrow(MmsDatabase.ID));
       long      dateSent             = cursor.getLong(cursor.getColumnIndexOrThrow(MmsDatabase.NORMALIZED_DATE_SENT));
@@ -1072,11 +1083,11 @@ public class MmsDatabase extends MessagingDatabase {
       byte[]contentLocationBytes = null;
       byte[]transactionIdBytes   = null;
 
-     // if (!TextUtils.isEmpty(contentLocation))
-     //   contentLocationBytes = id.co.projectscoid.util.Util.toIsoBytes(contentLocation);
+      if (!TextUtils.isEmpty(contentLocation))
+        contentLocationBytes = toIsoBytes(contentLocation);
 
-     // if (!TextUtils.isEmpty(transactionId))
-     //   transactionIdBytes = id.co.projectscoid.util.Util.toIsoBytes(transactionId);
+      if (!TextUtils.isEmpty(transactionId))
+        transactionIdBytes = toIsoBytes(transactionId);
 
       SlideDeck slideDeck = new SlideDeck(context, new MmsNotificationAttachment(status, messageSize));
 
@@ -1109,7 +1120,6 @@ public class MmsDatabase extends MessagingDatabase {
       if (!TextSecurePreferences.isReadReceiptsEnabled(context)) {
         readReceiptCount = 0;
       }
-
       Recipient                 recipient       = getRecipientFor(address);
       List<IdentityKeyMismatch> mismatches      = getMismatchedIdentities(mismatchDocument);
       List<NetworkFailure>      networkFailures = getFailures(networkDocument);
@@ -1124,6 +1134,7 @@ public class MmsDatabase extends MessagingDatabase {
 
     private Recipient getRecipientFor(String serialized) {
       Address address;
+
 
       if (TextUtils.isEmpty(serialized) || "insert-address-token".equals(serialized)) {
         address = Address.UNKNOWN;

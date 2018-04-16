@@ -43,6 +43,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
 class RecipientProvider {
+
   @SuppressWarnings("unused")
   private static final String TAG = RecipientProvider.class.getSimpleName();
 
@@ -71,8 +72,6 @@ class RecipientProvider {
     recipientCache.set(address, cachedRecipient);
     return cachedRecipient;
   }
-
-
 
   @NonNull Optional<Recipient> getCached(@NonNull Address address) {
     return Optional.fromNullable(recipientCache.get(address));

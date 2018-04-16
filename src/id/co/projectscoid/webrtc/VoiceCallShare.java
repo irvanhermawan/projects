@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
+import id.co.projectscoid.WebRtcCallActivity;
 import id.co.projectscoid.database.Address;
 import id.co.projectscoid.service.WebRtcCallService;
 
@@ -34,9 +35,9 @@ public class VoiceCallShare extends Activity {
             serviceIntent.putExtra(WebRtcCallService.EXTRA_REMOTE_ADDRESS, address);
             startService(serviceIntent);
 
-          //  Intent activityIntent = new Intent(this, WebRtcCallActivity.class);
-          //  activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          //  startActivity(activityIntent);
+            Intent activityIntent = new Intent(this, WebRtcCallActivity.class);
+            activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(activityIntent);
           }
         }
       } finally {

@@ -20,7 +20,6 @@ import id.co.projectscoid.crypto.AttachmentSecret;
 import id.co.projectscoid.crypto.ClassicDecryptingPartInputStream;
 import id.co.projectscoid.crypto.IdentityKeyUtil;
 import id.co.projectscoid.crypto.ModernDecryptingPartInputStream;
-import id.co.projectscoid.database.Address;
 import id.co.projectscoid.database.AttachmentDatabase;
 import id.co.projectscoid.database.MmsDatabase;
 import id.co.projectscoid.database.MmsSmsColumns;
@@ -190,7 +189,11 @@ public class FullBackupExporter extends FullBackupBase {
       String data   = cursor.getString(cursor.getColumnIndexOrThrow(AttachmentDatabase.DATA));
       byte[] random = cursor.getBlob(cursor.getColumnIndexOrThrow(AttachmentDatabase.DATA_RANDOM));
 
-      if (!TextUtils.isEmpty(data)) {
+      if (!TextUtils.isEmpty(data) && size <= 0) {
+        size = calculateVeryOldStreamLength(attachmentSecret, random, data);
+      }
+
+      if (!TextUtils.isEmpty(data) && size > 0) {
         InputStream inputStream;
 
         if (random != null && random.length == 32) inputStream = ModernDecryptingPartInputStream.createFor(attachmentSecret, random, new File(data), 0);
@@ -201,6 +204,23 @@ public class FullBackupExporter extends FullBackupBase {
     } catch (IOException e) {
       Log.w(TAG, e);
     }
+  }
+
+  private static long calculateVeryOldStreamLength(@NonNull AttachmentSecret attachmentSecret, @Nullable byte[] random, @NonNull String data) throws IOException {
+    long result = 0;
+    InputStream inputStream;
+
+    if (random != null && random.length == 32) inputStream = ModernDecryptingPartInputStream.createFor(attachmentSecret, random, new File(data), 0);
+    else                                       inputStream = ClassicDecryptingPartInputStream.createFor(attachmentSecret, new File(data));
+
+    int read;
+    byte[] buffer = new byte[8192];
+
+    while ((read = inputStream.read(buffer, 0, buffer.length)) != -1) {
+      result += read;
+    }
+
+    return result;
   }
 
   private static class BackupFrameOutputStream extends BackupStream {

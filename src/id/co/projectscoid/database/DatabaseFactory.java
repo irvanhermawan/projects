@@ -21,12 +21,17 @@ import android.support.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import id.co.projectscoid.DatabaseUpgradeActivity;
 import id.co.projectscoid.contacts.ContactsDatabase;
 import id.co.projectscoid.crypto.AttachmentSecret;
 import id.co.projectscoid.crypto.AttachmentSecretProvider;
 import id.co.projectscoid.crypto.DatabaseSecret;
 import id.co.projectscoid.crypto.DatabaseSecretProvider;
+import id.co.projectscoid.crypto.MasterSecret;
+import id.co.projectscoid.database.helpers.ClassicOpenHelper;
+import id.co.projectscoid.database.helpers.SQLCipherMigrationHelper;
 import id.co.projectscoid.database.helpers.SQLCipherOpenHelper;
+import id.co.projectscoid.util.TextSecurePreferences;
 
 public class DatabaseFactory {
 
@@ -131,6 +136,7 @@ public class DatabaseFactory {
 
   public static void upgradeRestored(Context context, SQLiteDatabase database){
     getInstance(context).databaseHelper.onUpgrade(database, database.getVersion(), -1);
+    getInstance(context).databaseHelper.markCurrent(database);
   }
 
   private DatabaseFactory(@NonNull Context context) {
@@ -158,7 +164,7 @@ public class DatabaseFactory {
     this.sessionDatabase      = new SessionDatabase(context, databaseHelper);
   }
 
- /* public void onApplicationLevelUpgrade(@NonNull Context context, @NonNull MasterSecret masterSecret,
+  public void onApplicationLevelUpgrade(@NonNull Context context, @NonNull MasterSecret masterSecret,
                                         int fromVersion, DatabaseUpgradeActivity.DatabaseUpgradeListener listener)
   {
     databaseHelper.getWritableDatabase();
@@ -180,6 +186,6 @@ public class DatabaseFactory {
                                                  databaseHelper.getWritableDatabase(),
                                                  listener);
     }
-  } */
+  }
 
 }

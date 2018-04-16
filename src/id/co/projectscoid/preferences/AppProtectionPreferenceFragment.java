@@ -12,19 +12,24 @@ import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.widget.Toast;
 
+import id.co.projectscoid.ApplicationContext;
+import id.co.projectscoid.ApplicationPreferencesActivity;
+import id.co.projectscoid.BlockedContactsActivity;
+import id.co.projectscoid.PassphraseChangeActivity;
+import id.co.projectscoid.R;
+import id.co.projectscoid.components.SwitchPreferenceCompat;
+import id.co.projectscoid.crypto.MasterSecretUtil;
+import id.co.projectscoid.dependencies.InjectableType;
+import id.co.projectscoid.jobs.MultiDeviceReadReceiptUpdateJob;
+import id.co.projectscoid.lock.RegistrationLockDialog;
+import id.co.projectscoid.service.KeyCachingService;
+import id.co.projectscoid.util.TextSecurePreferences;
 import org.whispersystems.signalservice.api.SignalServiceAccountManager;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import id.co.projectscoid.R;
-import id.co.projectscoid.components.SwitchPreferenceCompat;
-import id.co.projectscoid.crypto.MasterSecretUtil;
-import id.co.projectscoid.dependencies.InjectableType;
-import id.co.projectscoid.lock.RegistrationLockDialog;
-import id.co.projectscoid.service.KeyCachingService;
-import id.co.projectscoid.util.TextSecurePreferences;
 import mobi.upod.timedurationpicker.TimeDurationPickerDialog;
 
 public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment implements InjectableType {
@@ -39,7 +44,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
-  //  ApplicationContext.getInstance(activity).injectDependencies(this);
+    ApplicationContext.getInstance(activity).injectDependencies(this);
   }
 
   @Override
@@ -69,7 +74,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   @Override
   public void onResume() {
     super.onResume();
-   // ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__privacy);
+    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__privacy);
 
     if (!TextSecurePreferences.isPasswordDisabled(getContext())) initializePassphraseTimeoutSummary();
     else                                                         initializeScreenLockTimeoutSummary();
@@ -160,8 +165,8 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   private class BlockedContactsClickListener implements Preference.OnPreferenceClickListener {
     @Override
     public boolean onPreferenceClick(Preference preference) {
-    //  Intent intent = new Intent(getActivity(), BlockedContactsActivity.class);
-    //  startActivity(intent);
+      Intent intent = new Intent(getActivity(), BlockedContactsActivity.class);
+      startActivity(intent);
       return true;
     }
   }
@@ -170,9 +175,9 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
       boolean enabled = (boolean)newValue;
-      //ApplicationContext.getInstance(getContext())
-      //                  .getJobManager()
-      //                  .add(new MultiDeviceReadReceiptUpdateJob(getContext(), enabled));
+      ApplicationContext.getInstance(getContext())
+                        .getJobManager()
+                        .add(new MultiDeviceReadReceiptUpdateJob(getContext(), enabled));
 
       return true;
     }
@@ -204,7 +209,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
     @Override
     public boolean onPreferenceClick(Preference preference) {
       if (MasterSecretUtil.isPassphraseInitialized(getActivity())) {
-      //  startActivity(new Intent(getActivity(), PassphraseChangeActivity.class));
+        startActivity(new Intent(getActivity(), PassphraseChangeActivity.class));
       } else {
         Toast.makeText(getActivity(),
                        R.string.ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet,
@@ -258,8 +263,8 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
       } else {
-      //  Intent intent = new Intent(getActivity(), PassphraseChangeActivity.class);
-       // startActivity(intent);
+        Intent intent = new Intent(getActivity(), PassphraseChangeActivity.class);
+        startActivity(intent);
       }
 
       return false;

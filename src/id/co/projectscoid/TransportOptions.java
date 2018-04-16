@@ -5,15 +5,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import id.co.projectscoid.util.CharacterCalculator;
+import id.co.projectscoid.util.MmsCharacterCalculator;
+import id.co.projectscoid.permissions.Permissions;
+import id.co.projectscoid.util.PushCharacterCalculator;
+import id.co.projectscoid.util.SmsCharacterCalculator;
+import id.co.projectscoid.util.dualsim.SubscriptionInfoCompat;
+import id.co.projectscoid.util.dualsim.SubscriptionManagerCompat;
 import org.whispersystems.libsignal.util.guava.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import id.co.projectscoid.permissions.Permissions;
-import id.co.projectscoid.util.CharacterCalculator;
-import id.co.projectscoid.util.dualsim.SubscriptionInfoCompat;
-import id.co.projectscoid.util.dualsim.SubscriptionManagerCompat;
 
 import static id.co.projectscoid.TransportOption.Type;
 
@@ -122,20 +124,20 @@ public class TransportOptions {
     List<TransportOption> results = new LinkedList<>();
 
     if (isMediaMessage) {
-    //  results.addAll(getTransportOptionsForSimCards(context.getString(R.string.ConversationActivity_transport_insecure_mms),
-    //                                                context.getString(R.string.conversation_activity__type_message_mms_insecure),
-    //                                                new MmsCharacterCalculator()));
+      results.addAll(getTransportOptionsForSimCards(context.getString(R.string.ConversationActivity_transport_insecure_mms),
+                                                    context.getString(R.string.conversation_activity__type_message_mms_insecure),
+                                                    new MmsCharacterCalculator()));
     } else {
-    //  results.addAll(getTransportOptionsForSimCards(context.getString(R.string.ConversationActivity_transport_insecure_sms),
-    //                                                context.getString(R.string.conversation_activity__type_message_sms_insecure),
-    //                                                new SmsCharacterCalculator()));
+      results.addAll(getTransportOptionsForSimCards(context.getString(R.string.ConversationActivity_transport_insecure_sms),
+                                                    context.getString(R.string.conversation_activity__type_message_sms_insecure),
+                                                    new SmsCharacterCalculator()));
     }
 
-   // results.add(new TransportOption(Type.TEXTSECURE, R.drawable.ic_send_push_white_24dp,
-   //                                 context.getResources().getColor(R.color.textsecure_primary),
-   //                                 context.getString(R.string.ConversationActivity_transport_signal),
-   //                                 context.getString(R.string.conversation_activity__type_message_push),
-   //                                 new PushCharacterCalculator()));
+    results.add(new TransportOption(Type.TEXTSECURE, R.drawable.ic_send_push_white_24dp,
+                                    context.getResources().getColor(R.color.textsecure_primary),
+                                    context.getString(R.string.ConversationActivity_transport_signal),
+                                    context.getString(R.string.conversation_activity__type_message_push),
+                                    new PushCharacterCalculator()));
 
     return results;
   }
@@ -156,12 +158,12 @@ public class TransportOptions {
 
     if (subscriptions.size() < 2) {
       results.add(new TransportOption(Type.SMS, R.drawable.ic_send_sms_white_24dp,
-                                      context.getResources().getColor(R.color.material_grey_600),
+                                      context.getResources().getColor(R.color.grey_600),
                                       text, composeHint, characterCalculator));
     } else {
       for (SubscriptionInfoCompat subscriptionInfo : subscriptions) {
         results.add(new TransportOption(Type.SMS, R.drawable.ic_send_sms_white_24dp,
-                                        context.getResources().getColor(R.color.material_grey_600),
+                                        context.getResources().getColor(R.color.grey_600),
                                         text, composeHint, characterCalculator,
                                         Optional.of(subscriptionInfo.getDisplayName()),
                                         Optional.of(subscriptionInfo.getSubscriptionId())));

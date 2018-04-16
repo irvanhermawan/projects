@@ -19,18 +19,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
-import org.whispersystems.signalservice.api.push.exceptions.AuthorizationFailedException;
-
-import java.io.IOException;
-
+import id.co.projectscoid.ApplicationPreferencesActivity;
+import id.co.projectscoid.LogSubmitActivity;
 import id.co.projectscoid.R;
+import id.co.projectscoid.RegistrationActivity;
 import id.co.projectscoid.contacts.ContactAccessor;
 import id.co.projectscoid.contacts.ContactIdentityManager;
 import id.co.projectscoid.push.AccountManagerFactory;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.task.ProgressDialogAsyncTask;
+import org.whispersystems.libsignal.util.guava.Optional;
+import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import org.whispersystems.signalservice.api.push.exceptions.AuthorizationFailedException;
+
+import java.io.IOException;
 
 public class AdvancedPreferenceFragment extends CorrectedPreferenceFragment {
   private static final String TAG = AdvancedPreferenceFragment.class.getSimpleName();
@@ -59,9 +61,9 @@ public class AdvancedPreferenceFragment extends CorrectedPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-   // ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__advanced);
+    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__advanced);
 
-    //initializePushMessagingToggle();
+    initializePushMessagingToggle();
   }
 
   @Override
@@ -144,8 +146,8 @@ public class AdvancedPreferenceFragment extends CorrectedPreferenceFragment {
   private class SubmitDebugLogListener implements Preference.OnPreferenceClickListener {
     @Override
     public boolean onPreferenceClick(Preference preference) {
-     // final Intent intent = new Intent(getActivity(), LogSubmitActivity.class);
-     // startActivity(intent);
+      final Intent intent = new Intent(getActivity(), LogSubmitActivity.class);
+      startActivity(intent);
       return true;
     }
   }
@@ -218,12 +220,12 @@ public class AdvancedPreferenceFragment extends CorrectedPreferenceFragment {
         });
         builder.show();
       } else {
-      //  Intent nextIntent = new Intent(getActivity(), ApplicationPreferencesActivity.class);
+        Intent nextIntent = new Intent(getActivity(), ApplicationPreferencesActivity.class);
 
-     //   Intent intent = new Intent(getActivity(), RegistrationActivity.class);
-     //   intent.putExtra(RegistrationActivity.RE_REGISTRATION_EXTRA, true);
-      //  intent.putExtra("next_intent", nextIntent);
-      //  startActivity(intent);
+        Intent intent = new Intent(getActivity(), RegistrationActivity.class);
+        intent.putExtra(RegistrationActivity.RE_REGISTRATION_EXTRA, true);
+        intent.putExtra("next_intent", nextIntent);
+        startActivity(intent);
       }
 
       return false;

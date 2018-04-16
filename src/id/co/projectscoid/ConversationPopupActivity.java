@@ -14,9 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
-import java.util.concurrent.ExecutionException;
-
 import id.co.projectscoid.util.concurrent.ListenableFuture;
+
+import java.util.concurrent.ExecutionException;
 
 public class ConversationPopupActivity extends ConversationActivity {
 

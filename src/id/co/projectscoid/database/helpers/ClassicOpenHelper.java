@@ -20,7 +20,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.google.i18n.phonenumbers.ShortNumberInfo;
 
-//import id.co.projectscoid.DatabaseUpgradeActivity;
+import id.co.projectscoid.DatabaseUpgradeActivity;
 import id.co.projectscoid.crypto.AttachmentSecret;
 import id.co.projectscoid.crypto.ClassicDecryptingPartInputStream;
 import id.co.projectscoid.crypto.MasterCipher;
@@ -145,7 +145,7 @@ public class ClassicOpenHelper extends SQLiteOpenHelper {
     executeStatements(db, GroupReceiptDatabase.CREATE_INDEXES);
   }
 
-/*  public void onApplicationLevelUpgrade(Context context, MasterSecret masterSecret, int fromVersion,
+  public void onApplicationLevelUpgrade(Context context, MasterSecret masterSecret, int fromVersion,
                                         DatabaseUpgradeActivity.DatabaseUpgradeListener listener)
   {
     SQLiteDatabase db = getWritableDatabase();
@@ -434,7 +434,7 @@ public class ClassicOpenHelper extends SQLiteOpenHelper {
 //    DecryptingQueue.schedulePendingDecrypts(context, masterSecret);
     MessageNotifier.updateNotification(context);
   }
-*/
+
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     db.beginTransaction();

@@ -1,21 +1,29 @@
 package id.co.projectscoid.service;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
+
+import id.co.projectscoid.ConversationListActivity;
+import id.co.projectscoid.R;
+import id.co.projectscoid.database.SmsMigrator;
+import id.co.projectscoid.database.SmsMigrator.ProgressDescription;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import id.co.projectscoid.database.SmsMigrator;
-import id.co.projectscoid.database.SmsMigrator.ProgressDescription;
 
 // FIXME: This class is nuts.
 public class ApplicationMigrationService extends Service
@@ -27,7 +35,7 @@ public class ApplicationMigrationService extends Service
   private static final String PREFERENCES_NAME  = "SecureSMS";
   private static final String DATABASE_MIGRATED = "migrated";
 
- // private final BroadcastReceiver completedReceiver = new CompletedReceiver();
+  private final BroadcastReceiver completedReceiver = new CompletedReceiver();
   private final Binder binder                       = new ApplicationMigrationBinder();
   private final Executor executor                   = Executors.newSingleThreadExecutor();
 
@@ -53,7 +61,7 @@ public class ApplicationMigrationService extends Service
 
   @Override
   public void onDestroy() {
-    //unregisterCompletedReceiver();
+    unregisterCompletedReceiver();
   }
 
   @Override
@@ -69,12 +77,12 @@ public class ApplicationMigrationService extends Service
     IntentFilter filter = new IntentFilter();
     filter.addAction(COMPLETED_ACTION);
 
-  //  registerReceiver(completedReceiver, filter);
+    registerReceiver(completedReceiver, filter);
   }
 
- /* private void unregisterCompletedReceiver() {
+  private void unregisterCompletedReceiver() {
     unregisterReceiver(completedReceiver);
-  } */
+  }
 
   private void notifyImportComplete() {
     Intent intent = new Intent();
@@ -115,7 +123,7 @@ public class ApplicationMigrationService extends Service
       .notify(4242, notification.build());
   }
 
- /* private NotificationCompat.Builder initializeBackgroundNotification() {
+  private NotificationCompat.Builder initializeBackgroundNotification() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
     builder.setSmallIcon(R.drawable.icon_notification);
@@ -130,7 +138,7 @@ public class ApplicationMigrationService extends Service
     startForeground(4242, builder.build());
 
     return builder;
-  } */
+  }
 
   private class ImportRunnable implements Runnable {
 
@@ -138,7 +146,7 @@ public class ApplicationMigrationService extends Service
 
     @Override
     public void run() {
-     /* notification              = initializeBackgroundNotification();
+      notification              = initializeBackgroundNotification();
       PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
       WakeLock     wakeLock     = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Migration");
 
@@ -158,7 +166,7 @@ public class ApplicationMigrationService extends Service
         stopSelf();
       } finally {
         wakeLock.release();
-      }*/
+      }
     }
   }
 
@@ -168,9 +176,9 @@ public class ApplicationMigrationService extends Service
     }
   }
 
-  /* private static class CompletedReceiver extends BroadcastReceiver {
-     @Override
-     public void onReceive(Context context, Intent intent) {
+  private static class CompletedReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
       NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
       builder.setSmallIcon(R.drawable.icon_notification);
       builder.setContentTitle(context.getString(R.string.ApplicationMigrationService_import_complete));
@@ -183,7 +191,7 @@ public class ApplicationMigrationService extends Service
       Notification notification = builder.build();
       ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(31337, notification);
     }
-  } */
+  }
 
   public static class ImportState {
     public static final int STATE_IDLE                  = 0;

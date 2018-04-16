@@ -34,7 +34,7 @@ public class PersistentBlobProvider {
 
   private static final String TAG = PersistentBlobProvider.class.getSimpleName();
 
-  private static final String     URI_STRING            = "content://id.co.projectscoid/capture-new";
+  private static final String     URI_STRING            = "content://org.thoughtcrime.securesms/capture-new";
   public  static final Uri        CONTENT_URI           = Uri.parse(URI_STRING);
   public  static final String     AUTHORITY             = "id.co.projectscoid";
   public  static final String     EXPECTED_PATH_OLD     = "capture/*/*/#";

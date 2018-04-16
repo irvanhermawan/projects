@@ -1,20 +1,21 @@
 package id.co.projectscoid.contacts;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
 import android.provider.ContactsContract.RawContacts;
 import android.telephony.TelephonyManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import id.co.projectscoid.ApplicationPreferencesActivity;
 import id.co.projectscoid.util.TextSecurePreferences;
 
-//import id.co.projectscoid.ApplicationPreferencesActivity;
+import java.util.ArrayList;
+import java.util.List;
 
 class ContactIdentityManagerGingerbread extends ContactIdentityManager {
 

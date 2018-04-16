@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 
+import id.co.projectscoid.ConversationActivity;
 import id.co.projectscoid.mms.SlideDeck;
 import id.co.projectscoid.recipients.Recipient;
-import id.co.projectscoid.ConversationActivity;
 
 public class NotificationItem {
 

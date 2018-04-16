@@ -36,12 +36,15 @@ import id.co.projectscoid.R;
 import id.co.projectscoid.components.RecyclerViewFastScroller.FastScrollAdapter;
 import id.co.projectscoid.contacts.ContactSelectionListAdapter.HeaderViewHolder;
 import id.co.projectscoid.contacts.ContactSelectionListAdapter.ViewHolder;
+import id.co.projectscoid.database.Address;
 import id.co.projectscoid.database.CursorRecyclerViewAdapter;
-import id.co.projectscoid.util.StickyHeaderDecoration.StickyHeaderAdapter;
 import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.util.StickyHeaderDecoration.StickyHeaderAdapter;
 import id.co.projectscoid.util.Util;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**

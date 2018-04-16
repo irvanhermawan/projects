@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.ListPreference;
 
-import java.util.Arrays;
-
+import id.co.projectscoid.ApplicationPreferencesActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.util.TextSecurePreferences;
+
+import java.util.Arrays;
 
 public class AppearancePreferenceFragment extends ListSummaryPreferenceFragment {
 
@@ -30,19 +31,19 @@ public class AppearancePreferenceFragment extends ListSummaryPreferenceFragment 
   @Override
   public void onStart() {
     super.onStart();
-   // getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((ApplicationPreferencesActivity)getActivity());
+    getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((ApplicationPreferencesActivity)getActivity());
   }
 
   @Override
   public void onResume() {
     super.onResume();
-  //  ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__appearance);
+    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__appearance);
   }
 
   @Override
   public void onStop() {
     super.onStop();
-  //  getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((ApplicationPreferencesActivity) getActivity());
+    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((ApplicationPreferencesActivity) getActivity());
   }
 
   public static CharSequence getSummary(Context context) {

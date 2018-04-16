@@ -1,11 +1,13 @@
 package id.co.projectscoid.components.reminder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import id.co.projectscoid.InviteActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.database.DatabaseFactory;
 import id.co.projectscoid.util.TextSecurePreferences;
@@ -25,7 +27,7 @@ public class ShareReminder extends Reminder {
     setOkListener(new OnClickListener() {
       @Override public void onClick(View v) {
         TextSecurePreferences.setPromptedShare(context, true);
-      //  context.startActivity(new Intent(context, InviteActivity.class));
+        context.startActivity(new Intent(context, InviteActivity.class));
       }
     });
   }

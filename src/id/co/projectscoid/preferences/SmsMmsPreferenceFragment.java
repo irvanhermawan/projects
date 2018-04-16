@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
 
+import id.co.projectscoid.ApplicationPreferencesActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
@@ -42,7 +43,7 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-   // ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__sms_mms);
+    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__sms_mms);
 
     initializeDefaultPreference();
   }

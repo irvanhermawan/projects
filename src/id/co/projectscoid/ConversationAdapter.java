@@ -29,6 +29,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import id.co.projectscoid.ConversationAdapter.HeaderViewHolder;
+import id.co.projectscoid.database.AttachmentDatabase;
+import id.co.projectscoid.database.DatabaseFactory;
+import id.co.projectscoid.database.FastCursorRecyclerViewAdapter;
+import id.co.projectscoid.database.MmsSmsColumns;
+import id.co.projectscoid.database.MmsSmsDatabase;
+import id.co.projectscoid.database.model.MessageRecord;
+import id.co.projectscoid.database.model.MmsMessageRecord;
+import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.mms.SlideDeck;
+import id.co.projectscoid.recipients.Recipient;
+import id.co.projectscoid.util.Conversions;
+import id.co.projectscoid.util.DateUtils;
+import id.co.projectscoid.util.LRUCache;
+import id.co.projectscoid.util.StickyHeaderDecoration;
+import id.co.projectscoid.util.Util;
+import id.co.projectscoid.util.ViewUtil;
+
 import java.lang.ref.SoftReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,23 +58,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import id.co.projectscoid.database.AttachmentDatabase;
-import id.co.projectscoid.database.DatabaseFactory;
-import id.co.projectscoid.database.FastCursorRecyclerViewAdapter;
-import id.co.projectscoid.database.MmsSmsColumns;
-import id.co.projectscoid.database.MmsSmsDatabase;
-import id.co.projectscoid.database.model.MessageRecord;
-import id.co.projectscoid.database.model.MmsMessageRecord;
-import id.co.projectscoid.mms.SlideDeck;
-import id.co.projectscoid.mms.GlideRequests;
-import id.co.projectscoid.recipients.Recipient;
-import id.co.projectscoid.util.Conversions;
-import id.co.projectscoid.util.DateUtils;
-import id.co.projectscoid.util.LRUCache;
-import id.co.projectscoid.util.StickyHeaderDecoration;
-import id.co.projectscoid.util.Util;
-import id.co.projectscoid.util.ViewUtil;
-
 /**
  * A cursor adapter for a conversation thread.  Ultimately
  * used by ComposeMessageActivity to display a conversation
@@ -67,7 +68,7 @@ import id.co.projectscoid.util.ViewUtil;
  */
 public class ConversationAdapter <V extends View & BindableConversationItem>
     extends FastCursorRecyclerViewAdapter<ConversationAdapter.ViewHolder, MessageRecord>
-  implements StickyHeaderDecoration.StickyHeaderAdapter<ConversationAdapter.HeaderViewHolder>
+  implements StickyHeaderDecoration.StickyHeaderAdapter<HeaderViewHolder>
 {
 
   private static final int MAX_CACHE_SIZE = 40;

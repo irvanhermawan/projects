@@ -19,6 +19,7 @@ package id.co.projectscoid.service;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -29,10 +30,14 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 
-import java.util.concurrent.TimeUnit;
-
+import id.co.projectscoid.ConversationListActivity;
+import id.co.projectscoid.DatabaseUpgradeActivity;
+import id.co.projectscoid.DummyActivity;
+import id.co.projectscoid.R;
 import id.co.projectscoid.crypto.InvalidPassphraseException;
 import id.co.projectscoid.crypto.MasterSecret;
 import id.co.projectscoid.crypto.MasterSecretUtil;
@@ -40,6 +45,8 @@ import id.co.projectscoid.notifications.MessageNotifier;
 import id.co.projectscoid.util.DynamicLanguage;
 import id.co.projectscoid.util.ServiceUtil;
 import id.co.projectscoid.util.TextSecurePreferences;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Small service that stays running to keep a key cached in memory.
@@ -94,7 +101,7 @@ public class KeyCachingService extends Service {
 
   @SuppressLint("StaticFieldLeak")
   public void setMasterSecret(final MasterSecret masterSecret) {
-   /* synchronized (KeyCachingService.class) {
+    synchronized (KeyCachingService.class) {
       KeyCachingService.masterSecret = masterSecret;
 
       foregroundService();
@@ -110,7 +117,7 @@ public class KeyCachingService extends Service {
           return null;
         }
       }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    } */
+    }
   }
 
   @Override
@@ -162,9 +169,9 @@ public class KeyCachingService extends Service {
    */
   @Override
   public void onTaskRemoved(Intent rootIntent) {
-   // Intent intent = new Intent(this, DummyActivity.class);
-  //  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-   // startActivity(intent);
+    Intent intent = new Intent(this, DummyActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
   }
 
   private void handleActivityStarted() {
@@ -241,7 +248,7 @@ public class KeyCachingService extends Service {
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
   private void foregroundServiceModern() {
-  /*  Log.w("KeyCachingService", "foregrounding KCS");
+    Log.w("KeyCachingService", "foregrounding KCS");
     NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
     builder.setContentTitle(getString(R.string.KeyCachingService_passphrase_cached));
@@ -254,11 +261,11 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    startForeground(SERVICE_RUNNING_ID, builder.build()); */
+    startForeground(SERVICE_RUNNING_ID, builder.build());
   }
 
   private void foregroundServiceICS() {
-  /*  NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
     RemoteViews remoteViews            = new RemoteViews(getPackageName(), R.layout.key_caching_notification);
 
     remoteViews.setOnClickPendingIntent(R.id.lock_cache_icon, buildLockIntent());
@@ -268,11 +275,11 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    startForeground(SERVICE_RUNNING_ID, builder.build()); */
+    startForeground(SERVICE_RUNNING_ID, builder.build());
   }
 
   private void foregroundServiceLegacy() {
-  /*  NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
     builder.setSmallIcon(R.drawable.icon_cached);
     builder.setWhen(System.currentTimeMillis());
 
@@ -281,7 +288,7 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    startForeground(SERVICE_RUNNING_ID, builder.build()); */
+    startForeground(SERVICE_RUNNING_ID, builder.build());
   }
 
   private void foregroundService() {
@@ -314,11 +321,11 @@ public class KeyCachingService extends Service {
     return PendingIntent.getService(getApplicationContext(), 0, intent, 0);
   }
 
- /* private PendingIntent buildLaunchIntent() {
+  private PendingIntent buildLaunchIntent() {
     Intent intent              = new Intent(this, ConversationListActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     return PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-  } */
+  }
 
   @Override
   public IBinder onBind(Intent arg0) {

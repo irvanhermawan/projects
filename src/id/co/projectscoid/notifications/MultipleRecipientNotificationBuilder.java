@@ -3,18 +3,20 @@ package id.co.projectscoid.notifications;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import id.co.projectscoid.ConversationListActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.preferences.widgets.NotificationPrivacyPreference;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class MultipleRecipientNotificationBuilder extends AbstractNotificationBuilder {
 
@@ -26,7 +28,7 @@ public class MultipleRecipientNotificationBuilder extends AbstractNotificationBu
     setColor(context.getResources().getColor(R.color.textsecure_primary));
     setSmallIcon(R.drawable.icon_notification);
     setContentTitle(context.getString(R.string.app_name));
-  //  setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), 0));
+    setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), 0));
     setCategory(NotificationCompat.CATEGORY_MESSAGE);
     setPriority(TextSecurePreferences.getNotificationPriority(context));
     setGroupSummary(true);

@@ -38,12 +38,12 @@ import id.co.projectscoid.components.DeliveryStatusView;
 import id.co.projectscoid.components.FromTextView;
 import id.co.projectscoid.components.ThumbnailView;
 import id.co.projectscoid.database.model.ThreadRecord;
+import id.co.projectscoid.mms.GlideRequests;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.recipients.RecipientModifiedListener;
 import id.co.projectscoid.util.DateUtils;
 import id.co.projectscoid.util.Util;
 import id.co.projectscoid.util.ViewUtil;
-import id.co.projectscoid.mms.GlideRequests;
 
 import java.util.Locale;
 import java.util.Set;

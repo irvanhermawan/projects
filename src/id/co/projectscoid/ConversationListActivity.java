@@ -146,8 +146,8 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     case R.id.menu_settings:          handleDisplaySettings(); return true;
     case R.id.menu_clear_passphrase:  handleClearPassphrase(); return true;
     case R.id.menu_mark_all_read:     handleMarkAllRead();     return true;
- //   case R.id.menu_import_export:     handleImportExport();    return true;
- //   case R.id.menu_invite:            handleInvite();          return true;
+    case R.id.menu_import_export:     handleImportExport();    return true;
+    case R.id.menu_invite:            handleInvite();          return true;
     case R.id.menu_help:              handleHelp();            return true;
     }
 
@@ -180,13 +180,13 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   }
 
   private void createGroup() {
-  //  Intent intent = new Intent(this, GroupCreateActivity.class);
-  //  startActivity(intent);
+    Intent intent = new Intent(this, GroupCreateActivity.class);
+    startActivity(intent);
   }
 
   private void handleDisplaySettings() {
-   // Intent preferencesIntent = new Intent(this, ApplicationPreferencesActivity.class);
-   // startActivity(preferencesIntent);
+    Intent preferencesIntent = new Intent(this, ApplicationPreferencesActivity.class);
+    startActivity(preferencesIntent);
   }
 
   private void handleClearPassphrase() {
@@ -195,9 +195,9 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     startService(intent);
   }
 
- // private void handleImportExport() {
- //   startActivity(new Intent(this, ImportExportActivity.class));
- // }
+  private void handleImportExport() {
+    startActivity(new Intent(this, ImportExportActivity.class));
+  }
 
   @SuppressLint("StaticFieldLeak")
   private void handleMarkAllRead() {
@@ -215,9 +215,9 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
-  //private void handleInvite() {
-  //  startActivity(new Intent(this, InviteActivity.class));
- // }
+  private void handleInvite() {
+    startActivity(new Intent(this, InviteActivity.class));
+  }
 
   private void handleHelp() {
     try {

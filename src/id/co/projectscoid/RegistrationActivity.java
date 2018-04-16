@@ -249,15 +249,15 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
     this.countrySpinner.setAdapter(this.countrySpinnerAdapter);
     this.countrySpinner.setOnTouchListener((v, event) -> {
       if (event.getAction() == MotionEvent.ACTION_UP) {
-      //  Intent intent = new Intent(RegistrationActivity.this, CountrySelectionActivity.class);
-      //  startActivityForResult(intent, PICK_COUNTRY);
+        Intent intent = new Intent(RegistrationActivity.this, CountrySelectionActivity.class);
+        startActivityForResult(intent, PICK_COUNTRY);
       }
       return true;
     });
     this.countrySpinner.setOnKeyListener((v, keyCode, event) -> {
       if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_UP) {
-       // Intent intent = new Intent(RegistrationActivity.this, CountrySelectionActivity.class);
-       // startActivityForResult(intent, PICK_COUNTRY);
+        Intent intent = new Intent(RegistrationActivity.this, CountrySelectionActivity.class);
+        startActivityForResult(intent, PICK_COUNTRY);
         return true;
       }
       return false;

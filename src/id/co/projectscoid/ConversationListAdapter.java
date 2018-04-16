@@ -29,8 +29,9 @@ import id.co.projectscoid.database.CursorRecyclerViewAdapter;
 import id.co.projectscoid.database.DatabaseFactory;
 import id.co.projectscoid.database.ThreadDatabase;
 import id.co.projectscoid.database.model.ThreadRecord;
-import id.co.projectscoid.util.Conversions;
 import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.util.Conversions;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;

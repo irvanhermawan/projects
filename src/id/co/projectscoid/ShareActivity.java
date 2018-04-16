@@ -37,19 +37,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import id.co.projectscoid.components.SearchToolbar;
+import id.co.projectscoid.contacts.ContactsCursorLoader;
+import id.co.projectscoid.contacts.ContactsCursorLoader.DisplayMode;
 import id.co.projectscoid.database.Address;
+import id.co.projectscoid.database.DatabaseFactory;
+import id.co.projectscoid.database.ThreadDatabase;
 import id.co.projectscoid.mms.PartAuthority;
 import id.co.projectscoid.providers.PersistentBlobProvider;
+import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.util.DynamicLanguage;
 import id.co.projectscoid.util.DynamicNoActionBarTheme;
 import id.co.projectscoid.util.DynamicTheme;
 import id.co.projectscoid.util.FileUtils;
 import id.co.projectscoid.util.MediaUtil;
+import id.co.projectscoid.util.TextSecurePreferences;
+import id.co.projectscoid.util.ViewUtil;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * An activity to quickly share content with contacts
@@ -57,7 +64,7 @@ import id.co.projectscoid.util.MediaUtil;
  * @author Jake McGinty
  */
 public class ShareActivity extends PassphraseRequiredActionBarActivity
-    implements /*ContactSelectionListFragment.OnContactSelectedListener,*/ SwipeRefreshLayout.OnRefreshListener
+    implements ContactSelectionListFragment.OnContactSelectedListener, SwipeRefreshLayout.OnRefreshListener
 {
   private static final String TAG = ShareActivity.class.getSimpleName();
 
@@ -68,7 +75,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   private final DynamicTheme    dynamicTheme    = new DynamicNoActionBarTheme();
   private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
 
- // private ContactSelectionListFragment contactsFragment;
+  private ContactSelectionListFragment contactsFragment;
   private SearchToolbar                searchToolbar;
   private ImageView                    searchAction;
   private View                         progressWheel;
@@ -84,23 +91,22 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   protected void onCreate(Bundle icicle, boolean ready) {
-   /* if (!getIntent().hasExtra(ContactSelectionListFragment.DISPLAY_MODE)) {
+    if (!getIntent().hasExtra(ContactSelectionListFragment.DISPLAY_MODE)) {
       getIntent().putExtra(ContactSelectionListFragment.DISPLAY_MODE,
                            TextSecurePreferences.isSmsEnabled(this)
-                               ? ContactSelectionListFragment.DISPLAY_MODE_ALL
-                               : ContactSelectionListFragment.DISPLAY_MODE_PUSH_ONLY);
+                               ? DisplayMode.FLAG_ALL
+                               : DisplayMode.FLAG_PUSH | DisplayMode.FLAG_GROUPS);
     }
 
     getIntent().putExtra(ContactSelectionListFragment.REFRESHABLE, false);
     getIntent().putExtra(ContactSelectionListFragment.RECENTS, true);
-   */
+
     setContentView(R.layout.share_activity);
 
     initializeToolbar();
     initializeResources();
     initializeSearch();
     initializeMedia();
-
   }
 
   @Override
@@ -151,9 +157,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     progressWheel    = findViewById(R.id.progress_wheel);
     searchToolbar    = findViewById(R.id.search_toolbar);
     searchAction     = findViewById(R.id.search_action);
-   // contactsFragment = (ContactSelectionListFragment) getSupportFragmentManager().findFragmentById(R.id.contact_selection_list_fragment);
-   // contactsFragment.setOnContactSelectedListener(this);
-   // contactsFragment.setOnRefreshListener(this);
+    contactsFragment = (ContactSelectionListFragment) getSupportFragmentManager().findFragmentById(R.id.contact_selection_list_fragment);
+    contactsFragment.setOnContactSelectedListener(this);
+    contactsFragment.setOnRefreshListener(this);
   }
 
   private void initializeSearch() {
@@ -163,16 +169,16 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     searchToolbar.setListener(new SearchToolbar.SearchListener() {
       @Override
       public void onSearchTextChange(String text) {
-     //   if (contactsFragment != null) {
-     //     contactsFragment.setQueryFilter(text);
-     //   }
+        if (contactsFragment != null) {
+          contactsFragment.setQueryFilter(text);
+        }
       }
 
       @Override
       public void onSearchReset() {
-     //   if (contactsFragment != null) {
-      //    contactsFragment.resetQueryFilter();
-      //  }
+        if (contactsFragment != null) {
+          contactsFragment.resetQueryFilter();
+        }
       }
     });
   }
@@ -189,9 +195,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
       resolvedExtra       = streamExtra;
       handleResolvedMedia(getIntent(), false);
     } else {
-    //  contactsFragment.getView().setVisibility(View.GONE);
-    //  progressWheel.setVisibility(View.VISIBLE);
-    //  new ResolveMediaTask(context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, streamExtra);
+      contactsFragment.getView().setVisibility(View.GONE);
+      progressWheel.setVisibility(View.VISIBLE);
+      new ResolveMediaTask(context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, streamExtra);
     }
   }
 
@@ -206,9 +212,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void handleNewConversation() {
-   // Intent intent = getBaseShareIntent(NewConversationActivity.class);
-   // isPassingAlongMedia = true;
-   // startActivity(intent);
+    Intent intent = getBaseShareIntent(NewConversationActivity.class);
+    isPassingAlongMedia = true;
+    startActivity(intent);
   }
 
   private void handleResolvedMedia(Intent intent, boolean animate) {
@@ -227,7 +233,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
     boolean hasResolvedDestination = threadId != -1 && address != null && distributionType != -1;
 
-  /*  if (!hasResolvedDestination && animate) {
+    if (!hasResolvedDestination && animate) {
       ViewUtil.fadeIn(contactsFragment.getView(), 300);
       ViewUtil.fadeOut(progressWheel, 300);
     } else if (!hasResolvedDestination) {
@@ -235,7 +241,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
       progressWheel.setVisibility(View.GONE);
     } else {
       createConversation(threadId, address, distributionType);
-    } */
+    }
   }
 
   private void createConversation(long threadId, Address address, int distributionType) {
@@ -264,7 +270,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     }
     return MediaUtil.getCorrectedMimeType(getIntent().getType());
   }
-/*
+
   @Override
   public void onContactSelected(String number) {
     Recipient recipient = Recipient.from(this, Address.fromExternal(this, number), true);
@@ -275,7 +281,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   @Override
   public void onContactDeselected(String number) {
 
-  } */
+  }
 
   @Override
   public void onRefresh() {

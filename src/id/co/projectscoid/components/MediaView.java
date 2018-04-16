@@ -13,8 +13,8 @@ import android.view.Window;
 import android.widget.FrameLayout;
 
 import id.co.projectscoid.R;
-import id.co.projectscoid.mms.VideoSlide;
 import id.co.projectscoid.mms.GlideRequests;
+import id.co.projectscoid.mms.VideoSlide;
 import id.co.projectscoid.util.views.Stub;
 import id.co.projectscoid.video.VideoPlayer;
 

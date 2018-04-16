@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -49,23 +50,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
 import id.co.projectscoid.ConversationAdapter.HeaderViewHolder;
 import id.co.projectscoid.ConversationAdapter.ItemClickListener;
 import id.co.projectscoid.database.DatabaseFactory;
+import id.co.projectscoid.database.MmsSmsDatabase;
 import id.co.projectscoid.database.RecipientDatabase;
 import id.co.projectscoid.database.loaders.ConversationLoader;
 import id.co.projectscoid.database.model.MediaMmsMessageRecord;
 import id.co.projectscoid.database.model.MessageRecord;
+import id.co.projectscoid.mms.GlideApp;
 import id.co.projectscoid.mms.OutgoingMediaMessage;
 import id.co.projectscoid.mms.Slide;
-import id.co.projectscoid.mms.GlideApp;
 import id.co.projectscoid.profiles.UnknownSenderView;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.sms.MessageSender;
@@ -75,6 +70,13 @@ import id.co.projectscoid.util.SaveAttachmentTask.Attachment;
 import id.co.projectscoid.util.StickyHeaderDecoration;
 import id.co.projectscoid.util.ViewUtil;
 import id.co.projectscoid.util.task.ProgressDialogAsyncTask;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @SuppressLint("StaticFieldLeak")
 public class ConversationFragment extends Fragment
@@ -353,16 +355,16 @@ public class ConversationFragment extends Fragment
   }
 
   private void handleDisplayDetails(MessageRecord message) {
-  /*  Intent intent = new Intent(getActivity(), MessageDetailsActivity.class);
+    Intent intent = new Intent(getActivity(), MessageDetailsActivity.class);
     intent.putExtra(MessageDetailsActivity.MESSAGE_ID_EXTRA, message.getId());
     intent.putExtra(MessageDetailsActivity.THREAD_ID_EXTRA, threadId);
     intent.putExtra(MessageDetailsActivity.TYPE_EXTRA, message.isMms() ? MmsSmsDatabase.MMS_TRANSPORT : MmsSmsDatabase.SMS_TRANSPORT);
     intent.putExtra(MessageDetailsActivity.ADDRESS_EXTRA, recipient.getAddress());
     intent.putExtra(MessageDetailsActivity.IS_PUSH_GROUP_EXTRA, recipient.isGroupRecipient() && message.isPush());
-    startActivity(intent); */
+    startActivity(intent);
   }
 
-/*  private void handleForwardMessage(MessageRecord message) {
+  private void handleForwardMessage(MessageRecord message) {
     Intent composeIntent = new Intent(getActivity(), ShareActivity.class);
     composeIntent.putExtra(Intent.EXTRA_TEXT, message.getDisplayBody().toString());
     if (message.isMms()) {
@@ -375,7 +377,7 @@ public class ConversationFragment extends Fragment
     }
     startActivity(composeIntent);
   }
-*/
+
   private void handleResendMessage(final MessageRecord message) {
     final Context context = getActivity().getApplicationContext();
     new AsyncTask<MessageRecord, Void, Void>() {
@@ -658,7 +660,7 @@ public class ConversationFragment extends Fragment
           actionMode.finish();
           return true;
         case R.id.menu_context_forward:
-        //  handleForwardMessage(getSelectedMessageRecord());
+          handleForwardMessage(getSelectedMessageRecord());
           actionMode.finish();
           return true;
         case R.id.menu_context_resend:

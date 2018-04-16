@@ -30,11 +30,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import id.co.projectscoid.mms.GlideRequests;
-import id.co.projectscoid.mms.GlideApp;
+
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import id.co.projectscoid.R;
+import id.co.projectscoid.mms.GlideApp;
+import id.co.projectscoid.mms.GlideRequests;
 
 public class StickerSelectFragment extends Fragment implements LoaderManager.LoaderCallbacks<String[]> {
 

@@ -2,8 +2,10 @@ package id.co.projectscoid;
 
 import android.support.annotation.NonNull;
 
+import id.co.projectscoid.crypto.MasterSecret;
 import id.co.projectscoid.database.model.ThreadRecord;
 import id.co.projectscoid.mms.GlideRequests;
+
 import java.util.Locale;
 import java.util.Set;
 

@@ -37,17 +37,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.whispersystems.signalservice.internal.util.Util;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import id.co.projectscoid.ConversationActivity;
 import id.co.projectscoid.R;
 import id.co.projectscoid.database.DatabaseFactory;
 import id.co.projectscoid.database.MessagingDatabase.MarkedMessageInfo;
@@ -63,8 +53,19 @@ import id.co.projectscoid.util.ServiceUtil;
 import id.co.projectscoid.util.SpanUtil;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.webrtc.CallNotificationBuilder;
+import org.whispersystems.signalservice.internal.util.Util;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import me.leolin.shortcutbadger.ShortcutBadger;
-import id.co.projectscoid.ConversationActivity;
+
 
 /**
  * Handles posting system notifications for new messages.
@@ -305,10 +306,10 @@ public class MessageNotifier {
     long timestamp = notifications.get(0).getTimestamp();
     if (timestamp != 0) builder.setWhen(timestamp);
 
- /*   builder.addActions(notificationState.getMarkAsReadIntent(context, notificationId),
+    builder.addActions(notificationState.getMarkAsReadIntent(context, notificationId),
                        notificationState.getQuickReplyIntent(context, notifications.get(0).getRecipient()),
                        notificationState.getRemoteReplyIntent(context, notifications.get(0).getRecipient()));
- */
+
     builder.addAndroidAutoAction(notificationState.getAndroidAutoReplyIntent(context, notifications.get(0).getRecipient()),
                                  notificationState.getAndroidAutoHeardIntent(context, notificationId), notifications.get(0).getTimestamp());
 

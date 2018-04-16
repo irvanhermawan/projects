@@ -21,8 +21,8 @@ import id.co.projectscoid.R;
 import id.co.projectscoid.giph.model.GiphyImage;
 import id.co.projectscoid.giph.net.GiphyLoader;
 import id.co.projectscoid.giph.util.InfiniteScrollListener;
-import id.co.projectscoid.util.ViewUtil;
 import id.co.projectscoid.mms.GlideApp;
+import id.co.projectscoid.util.ViewUtil;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -36,19 +36,19 @@ import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.ViewGroup;
 
-import org.whispersystems.jobqueue.Job;
-import org.whispersystems.jobqueue.JobParameters;
-import org.whispersystems.libsignal.util.guava.Optional;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import id.co.projectscoid.ApplicationContext;
 import id.co.projectscoid.R;
 import id.co.projectscoid.util.BitmapUtil;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
+import org.whispersystems.jobqueue.Job;
+import org.whispersystems.jobqueue.JobParameters;
+import org.whispersystems.libsignal.util.guava.Optional;
 
 @SuppressWarnings("deprecation")
 public class CameraView extends ViewGroup {
@@ -485,7 +485,7 @@ public class CameraView extends ViewGroup {
   }
 
   private void enqueueTask(SerialAsyncTask job) {
-    //ApplicationContext.getInstance(getContext()).getJobManager().add(job);
+    ApplicationContext.getInstance(getContext()).getJobManager().add(job);
   }
 
   private static abstract class SerialAsyncTask<Result> extends Job {
