@@ -64,10 +64,10 @@ public class SignalServiceNetworkAccess {
       put(COUNTRY_CODE_QATAR, serviceConfig);
     }};
 
-    this.uncensoredConfiguration = new SignalServiceConfiguration(new SignalServiceUrl[] {new SignalServiceUrl(BuildConfig.SIGNAL_URL, new SignalServiceTrustStore(context))},
-                                                                  new SignalCdnUrl[] {new SignalCdnUrl(BuildConfig.SIGNAL_CDN_URL, new SignalServiceTrustStore(context))});
-  //  this.uncensoredConfiguration = new SignalServiceConfiguration(new SignalServiceUrl[] {new SignalServiceUrl(BuildConfig.PROJECTS_URL, new SignalServiceTrustStore(context))},
-  //          new SignalCdnUrl[] {new SignalCdnUrl(BuildConfig.PROJECTS_CDN_URL, new SignalServiceTrustStore(context))});
+  //  this.uncensoredConfiguration = new SignalServiceConfiguration(new SignalServiceUrl[] {new SignalServiceUrl(BuildConfig.SIGNAL_URL, new SignalServiceTrustStore(context))},
+  //                                                                new SignalCdnUrl[] {new SignalCdnUrl(BuildConfig.SIGNAL_CDN_URL, new SignalServiceTrustStore(context))});
+    this.uncensoredConfiguration = new SignalServiceConfiguration(new SignalServiceUrl[] {new SignalServiceUrl(BuildConfig.PROJECTS_URL, new SignalServiceTrustStore(context))},
+            new SignalCdnUrl[] {new SignalCdnUrl(BuildConfig.PROJECTS_CDN_URL, new SignalServiceTrustStore(context))});
     this.censoredCountries = this.censorshipConfiguration.keySet().toArray(new String[0]);
   }
 
