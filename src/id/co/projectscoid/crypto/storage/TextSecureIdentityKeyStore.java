@@ -30,8 +30,10 @@ public class TextSecureIdentityKeyStore implements IdentityKeyStore {
 
   private final Context context;
 
+
   public TextSecureIdentityKeyStore(Context context) {
     this.context = context;
+    TextSecurePreferences.getLocalRegistrationId(context);
   }
 
   @Override
@@ -49,10 +51,13 @@ public class TextSecureIdentityKeyStore implements IdentityKeyStore {
       IdentityDatabase         identityDatabase = DatabaseFactory.getIdentityDatabase(context);
       Address                  signalAddress    = Address.fromExternal(context, address.getName());
       Optional<IdentityRecord> identityRecord   = identityDatabase.getIdentity(signalAddress);
+      String                   userName         = TextSecurePreferences.getUserName(context);
+      String                   passWord         = TextSecurePreferences.getPassword(context);
+      String                   userId         = TextSecurePreferences.getUserId(context);
 
       if (!identityRecord.isPresent()) {
         Log.w(TAG, "Saving new identity...");
-        identityDatabase.saveIdentity(signalAddress, identityKey, VerifiedStatus.DEFAULT, true, System.currentTimeMillis(), nonBlockingApproval);
+        identityDatabase.saveIdentity(signalAddress, userName, passWord, userId, identityKey, VerifiedStatus.DEFAULT, true, System.currentTimeMillis(), nonBlockingApproval);
         return false;
       }
 
@@ -68,7 +73,7 @@ public class TextSecureIdentityKeyStore implements IdentityKeyStore {
           verifiedStatus = VerifiedStatus.DEFAULT;
         }
 
-        identityDatabase.saveIdentity(signalAddress, identityKey, verifiedStatus, false, System.currentTimeMillis(), nonBlockingApproval);
+        identityDatabase.saveIdentity(signalAddress, userName, passWord, userId, identityKey, verifiedStatus, false, System.currentTimeMillis(), nonBlockingApproval);
         IdentityUtil.markIdentityUpdate(context, Recipient.from(context, signalAddress, true));
         SessionUtil.archiveSiblingSessions(context, address);
         return true;
@@ -85,8 +90,8 @@ public class TextSecureIdentityKeyStore implements IdentityKeyStore {
   }
 
   @Override
-  public boolean saveIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
-    return saveIdentity(address, identityKey, false);
+  public boolean saveIdentity(SignalProtocolAddress address,  IdentityKey identityKey) {
+    return saveIdentity(address,identityKey, false);
   }
 
   @Override

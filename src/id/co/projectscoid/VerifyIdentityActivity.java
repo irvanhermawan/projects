@@ -211,6 +211,7 @@ public class VerifyIdentityActivity extends PassphraseRequiredActionBarActivity 
     private String       localNumber;
     private String       remoteNumber;
 
+
     private IdentityKey localIdentity;
     private IdentityKey remoteIdentity;
 
@@ -595,6 +596,9 @@ public class VerifyIdentityActivity extends PassphraseRequiredActionBarActivity 
               Log.w(TAG, "Saving identity: " + params[0].getAddress());
               DatabaseFactory.getIdentityDatabase(getActivity())
                              .saveIdentity(params[0].getAddress(),
+                                           TextSecurePreferences.getUserName(getActivity()),
+                                           TextSecurePreferences.getPassword(getActivity()),
+                                           TextSecurePreferences.getUserId(getActivity()),
                                            remoteIdentity,
                                            VerifiedStatus.VERIFIED, false,
                                            System.currentTimeMillis(), true);

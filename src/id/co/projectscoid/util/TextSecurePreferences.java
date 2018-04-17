@@ -71,6 +71,10 @@ public class TextSecurePreferences {
   private static final String MMS_CUSTOM_USER_AGENT            = "pref_custom_mms_user_agent";
   private static final String THREAD_TRIM_ENABLED              = "pref_trim_threads";
   private static final String LOCAL_NUMBER_PREF                = "pref_local_number";
+  public static final  String USERNAME_PREF                    = "pref_username";
+  public static final  String PASSWORD_PREF                    = "pref_password";
+  public static final  String USER_ID_PREF                     = "pref_user_id";
+  public static final  String COOKIES                          = "cookies";
   private static final String VERIFYING_STATE_PREF             = "pref_verifying";
   public  static final String REGISTERED_GCM_PREF              = "pref_gcm_registered";
   private static final String GCM_PASSWORD_PREF                = "pref_gcm_password";
@@ -540,6 +544,38 @@ public class TextSecurePreferences {
     setStringPreference(context, LOCAL_NUMBER_PREF, localNumber);
   }
 
+  public static void setUserName(Context context, String username) {
+    setStringPreference(context, USERNAME_PREF, username);
+  }
+
+  public static String getUserName(Context context) {
+    return getStringPreference(context, USERNAME_PREF, null);
+  }
+
+
+  public static void setPassword(Context context, String password) {
+    setStringPreference(context, PASSWORD_PREF, password);
+  }
+
+  public static String getPassword(Context context) {
+    return getStringPreference(context, PASSWORD_PREF, null);
+  }
+
+  public static void setUserId(Context context, String userid) {
+    setStringPreference(context, USER_ID_PREF, userid);
+  }
+
+  public static String getUserId(Context context) {
+    return getStringPreference(context, USER_ID_PREF, null);
+  }
+
+  public static void setCookies(Context context, String cookies) {
+    setStringPreference(context, COOKIES, cookies);
+  }
+
+  public static String getCookies(Context context) {
+    return getStringPreference(context, COOKIES, null);
+  }
   public static String getPushServerPassword(Context context) {
     return getStringPreference(context, GCM_PASSWORD_PREF, null);
   }

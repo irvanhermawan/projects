@@ -128,7 +128,7 @@
             <Spinner android:id="@+id/country_spinner"
                      android:layout_width="fill_parent"
                      android:layout_height="wrap_content"
-                     android:layout_marginBottom="16dip" />
+                     android:layout_marginBottom="5dip" />
 
             <LinearLayout android:orientation="horizontal"
                           android:layoutDirection="ltr"
@@ -155,9 +155,34 @@
                           android:layout_height="wrap_content"
                           android:layout_weight="1"
                           android:inputType="phone"
-                          android:hint="@string/registration_activity__phone_number"
                           android:gravity="center"
-                          android:singleLine="true"/>
+                          android:hint="@string/registration_activity__phone_number"
+                          android:singleLine="false"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:orientation="horizontal"
+                android:layoutDirection="ltr"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <EditText android:id="@+id/username"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:hint="@string/registration_activity__username"
+                        android:layout_below="@+id/number"
+                        android:singleLine="false"/>
+
+                <EditText android:id="@+id/password"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:hint="@string/registration_activity__password"
+
+                        android:layout_below="@+id/username"
+                        android:singleLine="false"/>
 
             </LinearLayout>
 

@@ -41,6 +41,9 @@ public class IdentityDatabase extends Database {
   private static final String TABLE_NAME           = "identities";
   private static final String ID                   = "_id";
   private static final String ADDRESS              = "address";
+  private static final String USERNAME              = "username";
+  private static final String PASSWORD              = "password";
+  private static final String USER_ID              = "user_id";
   private static final String IDENTITY_KEY         = "key";
   private static final String TIMESTAMP            = "timestamp";
   private static final String FIRST_USE            = "first_use";
@@ -50,6 +53,9 @@ public class IdentityDatabase extends Database {
   public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
       " (" + ID + " INTEGER PRIMARY KEY, " +
       ADDRESS + " TEXT UNIQUE, " +
+      USERNAME + " TEXT, " +
+      PASSWORD + " TEXT, " +
+      USER_ID + " TEXT, " +
       IDENTITY_KEY + " TEXT, " +
       FIRST_USE + " INTEGER DEFAULT 0, " +
       TIMESTAMP + " INTEGER DEFAULT 0, " +
@@ -108,7 +114,7 @@ public class IdentityDatabase extends Database {
     return Optional.absent();
   }
 
-  public void saveIdentity(Address address, IdentityKey identityKey, VerifiedStatus verifiedStatus,
+  public void saveIdentity(Address address, String userName, String passWord, String userId, IdentityKey identityKey, VerifiedStatus verifiedStatus,
                            boolean firstUse, long timestamp, boolean nonBlockingApproval)
   {
     SQLiteDatabase database          = databaseHelper.getWritableDatabase();
@@ -116,6 +122,9 @@ public class IdentityDatabase extends Database {
 
     ContentValues contentValues = new ContentValues();
     contentValues.put(ADDRESS, address.serialize());
+    contentValues.put(USERNAME, userName);
+    contentValues.put(PASSWORD, passWord);
+    contentValues.put(USER_ID, userId);
     contentValues.put(IDENTITY_KEY, identityKeyString);
     contentValues.put(TIMESTAMP, timestamp);
     contentValues.put(VERIFIED, verifiedStatus.toInt());
@@ -124,7 +133,7 @@ public class IdentityDatabase extends Database {
 
     database.replace(TABLE_NAME, null, contentValues);
 
-    EventBus.getDefault().post(new IdentityRecord(address, identityKey, verifiedStatus,
+    EventBus.getDefault().post(new IdentityRecord(address, userName, passWord, userId, identityKey, verifiedStatus,
                                                   firstUse, timestamp, nonBlockingApproval));
   }
 
@@ -154,6 +163,9 @@ public class IdentityDatabase extends Database {
 
   private IdentityRecord getIdentityRecord(@NonNull Cursor cursor) throws IOException, InvalidKeyException {
     String      address             = cursor.getString(cursor.getColumnIndexOrThrow(ADDRESS));
+    String      userName             = cursor.getString(cursor.getColumnIndexOrThrow(USERNAME));
+    String      passWord             = cursor.getString(cursor.getColumnIndexOrThrow(PASSWORD));
+    String      userId             = cursor.getString(cursor.getColumnIndexOrThrow(USER_ID));
     String      serializedIdentity  = cursor.getString(cursor.getColumnIndexOrThrow(IDENTITY_KEY));
     long        timestamp           = cursor.getLong(cursor.getColumnIndexOrThrow(TIMESTAMP));
     int         verifiedStatus      = cursor.getInt(cursor.getColumnIndexOrThrow(VERIFIED));
@@ -161,23 +173,29 @@ public class IdentityDatabase extends Database {
     boolean     firstUse            = cursor.getInt(cursor.getColumnIndexOrThrow(FIRST_USE))            == 1;
     IdentityKey identity            = new IdentityKey(Base64.decode(serializedIdentity), 0);
 
-    return new IdentityRecord(Address.fromSerialized(address), identity, VerifiedStatus.forState(verifiedStatus), firstUse, timestamp, nonblockingApproval);
+    return new IdentityRecord(Address.fromSerialized(address), userName, passWord, userId, identity, VerifiedStatus.forState(verifiedStatus), firstUse, timestamp, nonblockingApproval);
   }
 
   public static class IdentityRecord {
 
     private final Address        address;
+    private  String        userName = "";
+    private  String        passWord = "";
+    private  String        userId = "";
     private final IdentityKey    identitykey;
     private final VerifiedStatus verifiedStatus;
     private final boolean        firstUse;
     private final long           timestamp;
     private final boolean        nonblockingApproval;
 
-    private IdentityRecord(Address address,
+    private IdentityRecord(Address address, String userName, String passWord, String userId,
                            IdentityKey identitykey, VerifiedStatus verifiedStatus,
                            boolean firstUse, long timestamp, boolean nonblockingApproval)
     {
       this.address             = address;
+      this.userName            = userName;
+      this.passWord            = passWord;
+      this.userId              = userId;
       this.identitykey         = identitykey;
       this.verifiedStatus      = verifiedStatus;
       this.firstUse            = firstUse;

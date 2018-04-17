@@ -117,6 +117,8 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
   private Spinner                countrySpinner;
   private TextView               countryCode;
   private TextView               number;
+  private TextView               username;
+  private TextView               password;
   private CircularProgressButton createButton;
   private TextView               informationView;
   private TextView               informationToggleText;
@@ -188,6 +190,8 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
     this.countrySpinner        = findViewById(R.id.country_spinner);
     this.countryCode           = findViewById(R.id.country_code);
     this.number                = findViewById(R.id.number);
+    this.username              = findViewById(R.id.username);
+    this.password              = findViewById(R.id.password);
     this.createButton          = findViewById(R.id.registerButton);
     this.informationView       = findViewById(R.id.registration_information);
     this.informationToggleText = findViewById(R.id.information_label);
@@ -433,7 +437,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
       return;
     }
 
-    final String e164number = getConfiguredE164Number();
+    final String e164number = "+628562143569";//getConfiguredE164Number();
 
     if (!PhoneNumberFormatter.isValidNumber(e164number)) {
       Dialogs.showAlertDialog(this, getString(R.string.RegistrationActivity_invalid_number),
@@ -477,8 +481,8 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
             gcmToken = Optional.absent();
           }
 
-          accountManager = AccountManagerFactory.createManager(RegistrationActivity.this, e164number, password);
-          accountManager.requestSmsVerificationCode();
+         // accountManager = AccountManagerFactory.createManager(RegistrationActivity.this, e164number, password);
+         // accountManager.requestSmsVerificationCode();
 
           return new Pair<>(password, gcmToken);
         } catch (IOException e) {
@@ -494,7 +498,53 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
         }
 
         registrationState = new RegistrationState(RegistrationState.State.VERIFYING, e164number, result.first, result.second);
-        displayVerificationView(e164number, 64);
+        registrationState = new RegistrationState(RegistrationState.State.CHECKING, registrationState);
+        new AsyncTask<Void, Void, Pair<Integer, Long>>() {
+          @Override
+          protected Pair<Integer, Long> doInBackground(Void... voids) {
+            try {
+              verifyAccount("1234", null);
+              return new Pair<>(1, -1L);
+            } catch (LockedException e) {
+              Log.w(TAG, e);
+              return new Pair<>(2, e.getTimeRemaining());
+            } catch (IOException e) {
+              Log.w(TAG, e);
+              return new Pair<>(3, -1L);
+            }
+          }
+          @Override
+          protected void onPostExecute(Pair<Integer, Long> result) {
+            if (result.first == 1) {
+              handleSuccessfulRegistration();
+              //keyboard.displaySuccess().addListener(new AssertedSuccessListener<Boolean>() {
+              //  @Override
+              //  public void onSuccess(Boolean result) {
+                //  handleSuccessfulRegistration();
+              //  }
+             // });
+            } else if (result.first == 2) {
+              keyboard.displayLocked().addListener(new AssertedSuccessListener<Boolean>() {
+                @Override
+                public void onSuccess(Boolean r) {
+                  registrationState = new RegistrationState(RegistrationState.State.PIN, registrationState);
+                  displayPinView("1234", result.second);
+                }
+              });
+            } else {
+              keyboard.displayFailure().addListener(new AssertedSuccessListener<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                  registrationState = new RegistrationState(RegistrationState.State.VERIFYING, registrationState);
+                  callMeCountDownView.setVisibility(View.VISIBLE);
+                  verificationCodeView.clear();
+                  keyboard.displayKeyboard();
+                }
+              });
+            }
+          }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        // displayVerificationView(e164number, 64);
       }
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
@@ -660,30 +710,33 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
 
     String signalingKey = Util.getSecret(52);
 
-    accountManager.verifyAccountWithCode(code, signalingKey, registrationId, !registrationState.gcmToken.isPresent(), pin);
+   // accountManager.verifyAccountWithCode(code, signalingKey, registrationId, !registrationState.gcmToken.isPresent(), pin);
 
     IdentityKeyPair    identityKey  = IdentityKeyUtil.getIdentityKeyPair(RegistrationActivity.this);
     List<PreKeyRecord> records      = PreKeyUtil.generatePreKeys(RegistrationActivity.this);
     SignedPreKeyRecord signedPreKey = PreKeyUtil.generateSignedPreKey(RegistrationActivity.this, identityKey, true);
 
-    accountManager.setPreKeys(identityKey.getPublicKey(), signedPreKey, records);
+   // accountManager.setPreKeys(identityKey.getPublicKey(), signedPreKey, records);
 
-    if (registrationState.gcmToken.isPresent()) {
-      accountManager.setGcmId(registrationState.gcmToken);
-    }
+   // if (registrationState.gcmToken.isPresent()) {
+   //   accountManager.setGcmId(registrationState.gcmToken);
+  //  }
 
     TextSecurePreferences.setGcmRegistrationId(RegistrationActivity.this, registrationState.gcmToken.orNull());
     TextSecurePreferences.setGcmDisabled(RegistrationActivity.this, !registrationState.gcmToken.isPresent());
     TextSecurePreferences.setWebsocketRegistered(RegistrationActivity.this, true);
 
     DatabaseFactory.getIdentityDatabase(RegistrationActivity.this)
-                   .saveIdentity(Address.fromSerialized(registrationState.e164number),
+                   .saveIdentity(Address.fromSerialized(registrationState.e164number), this.username.getText().toString(), this.password.getText().toString(), "119",
                                  identityKey.getPublicKey(), IdentityDatabase.VerifiedStatus.VERIFIED,
                                  true, System.currentTimeMillis(), true);
 
-    TextSecurePreferences.setVerifying(RegistrationActivity.this, false);
+    TextSecurePreferences.setVerifying(RegistrationActivity.this, true);
     TextSecurePreferences.setPushRegistered(RegistrationActivity.this, true);
     TextSecurePreferences.setLocalNumber(RegistrationActivity.this, registrationState.e164number);
+    TextSecurePreferences.setUserName(RegistrationActivity.this, username.getText().toString());
+    TextSecurePreferences.setPassword(RegistrationActivity.this, password.getText().toString());
+    TextSecurePreferences.setUserId(RegistrationActivity.this, "119");// user_id
     TextSecurePreferences.setPushServerPassword(RegistrationActivity.this, registrationState.password);
     TextSecurePreferences.setSignalingKey(RegistrationActivity.this, signalingKey);
     TextSecurePreferences.setSignedPreKeyRegistered(RegistrationActivity.this, true);
@@ -977,10 +1030,10 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
   }
 
   private void markAsVerifying(boolean verifying) {
-    TextSecurePreferences.setVerifying(this, verifying);
+  //  TextSecurePreferences.setVerifying(this, verifying);
 
     if (verifying) {
-      TextSecurePreferences.setPushRegistered(this, false);
+     // TextSecurePreferences.setPushRegistered(this, false);
     }
   }
 
