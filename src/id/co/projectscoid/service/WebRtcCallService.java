@@ -70,7 +70,7 @@ import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoTrack;
 import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.SignalServiceMessageSender;
 import org.whispersystems.signalservice.api.crypto.UntrustedIdentityException;
 import org.whispersystems.signalservice.api.messages.calls.AnswerMessage;
@@ -154,7 +154,7 @@ public class WebRtcCallService extends Service implements InjectableType, PeerCo
   private boolean   bluetoothAvailable = false;
 
   @Inject public SignalServiceMessageSender  messageSender;
-  @Inject public SignalServiceAccountManager accountManager;
+  @Inject public ProjectsServiceAccountManager accountManager;
 
   private PeerConnectionFactory      peerConnectionFactory;
   private SignalAudioManager         audioManager;

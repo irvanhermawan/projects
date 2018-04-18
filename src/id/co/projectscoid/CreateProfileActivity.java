@@ -56,7 +56,8 @@ import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
 import id.co.projectscoid.util.ViewUtil;
 import id.co.projectscoid.util.concurrent.ListenableFuture;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+//import id.co.projectscoid.service.ProjectsServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.crypto.ProfileCipher;
 import org.whispersystems.signalservice.api.util.StreamDetails;
 
@@ -85,7 +86,7 @@ public class CreateProfileActivity extends BaseActionBarActivity implements Inje
   private final DynamicTheme    dynamicTheme    = new DynamicTheme();
   private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
 
-  @Inject SignalServiceAccountManager accountManager;
+  @Inject ProjectsServiceAccountManager accountManager;
 
   private InputAwareLayout       container;
   private ImageView              avatar;

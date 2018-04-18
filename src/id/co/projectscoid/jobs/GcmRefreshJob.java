@@ -35,7 +35,7 @@ import id.co.projectscoid.util.TextSecurePreferences;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.NonSuccessfulResponseCodeException;
 
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ public class GcmRefreshJob extends ContextJob implements InjectableType {
 
   public static final String REGISTRATION_ID = "312334754206";
 
-  @Inject transient SignalServiceAccountManager textSecureAccountManager;
+  @Inject transient ProjectsServiceAccountManager textSecureAccountManager;
 
   public GcmRefreshJob(Context context) {
     super(context, JobParameters.newBuilder()

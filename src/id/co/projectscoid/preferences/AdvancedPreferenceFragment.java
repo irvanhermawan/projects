@@ -29,7 +29,7 @@ import id.co.projectscoid.push.AccountManagerFactory;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.task.ProgressDialogAsyncTask;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.AuthorizationFailedException;
 
 import java.io.IOException;
@@ -184,7 +184,7 @@ public class AdvancedPreferenceFragment extends CorrectedPreferenceFragment {
       protected Integer doInBackground(Void... params) {
         try {
           Context                     context        = getActivity();
-          SignalServiceAccountManager accountManager = AccountManagerFactory.createManager(context);
+          ProjectsServiceAccountManager accountManager = AccountManagerFactory.createManager(context);
 
           try {
             accountManager.setGcmId(Optional.<String>absent());

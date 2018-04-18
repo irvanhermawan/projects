@@ -69,6 +69,8 @@ import id.co.projectscoid.jobs.GcmRefreshJob;
 import id.co.projectscoid.lock.RegistrationLockReminders;
 import id.co.projectscoid.permissions.Permissions;
 import id.co.projectscoid.push.AccountManagerFactory;
+import id.co.projectscoid.push.AccountProjectsManagerFactory;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import id.co.projectscoid.service.DirectoryRefreshListener;
 import id.co.projectscoid.service.RotateSignedPreKeyListener;
 import id.co.projectscoid.util.BackupUtil;
@@ -85,7 +87,7 @@ import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 import org.whispersystems.libsignal.util.KeyHelper;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.RateLimitException;
 import org.whispersystems.signalservice.api.util.PhoneNumberFormatter;
 import org.whispersystems.signalservice.internal.push.LockedException;
@@ -118,7 +120,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
   private TextView               countryCode;
   private TextView               number;
   private TextView               username;
-  private TextView               password;
+  private TextView               userpassword;
   private CircularProgressButton createButton;
   private TextView               informationView;
   private TextView               informationToggleText;
@@ -145,7 +147,8 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
   private VerificationCodeView        verificationCodeView;
   private RegistrationState           registrationState;
   private ChallengeReceiver           challengeReceiver;
-  private SignalServiceAccountManager accountManager;
+  private ProjectsServiceAccountManager accountManager;
+  private ProjectsServiceAccountManager accountPManager;
 
 
   @Override
@@ -191,7 +194,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
     this.countryCode           = findViewById(R.id.country_code);
     this.number                = findViewById(R.id.number);
     this.username              = findViewById(R.id.username);
-    this.password              = findViewById(R.id.password);
+    this.userpassword          = findViewById(R.id.password);
     this.createButton          = findViewById(R.id.registerButton);
     this.informationView       = findViewById(R.id.registration_information);
     this.informationToggleText = findViewById(R.id.information_label);
@@ -480,8 +483,9 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
           } else {
             gcmToken = Optional.absent();
           }
-
-         // accountManager = AccountManagerFactory.createManager(RegistrationActivity.this, e164number, password);
+          accountManager = AccountManagerFactory.createManager(RegistrationActivity.this, e164number, password, username.getText().toString()
+          , userpassword.getText().toString(), "");
+        //  accountManager = AccountManagerFactory.createManager(RegistrationActivity.this, e164number, password);
          // accountManager.requestSmsVerificationCode();
 
           return new Pair<>(password, gcmToken);
@@ -727,7 +731,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
     TextSecurePreferences.setWebsocketRegistered(RegistrationActivity.this, true);
 
     DatabaseFactory.getIdentityDatabase(RegistrationActivity.this)
-                   .saveIdentity(Address.fromSerialized(registrationState.e164number), this.username.getText().toString(), this.password.getText().toString(), "119",
+                   .saveIdentity(Address.fromSerialized(registrationState.e164number), this.username.getText().toString(), this.userpassword.getText().toString(), "119",
                                  identityKey.getPublicKey(), IdentityDatabase.VerifiedStatus.VERIFIED,
                                  true, System.currentTimeMillis(), true);
 
@@ -735,7 +739,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements Verif
     TextSecurePreferences.setPushRegistered(RegistrationActivity.this, true);
     TextSecurePreferences.setLocalNumber(RegistrationActivity.this, registrationState.e164number);
     TextSecurePreferences.setUserName(RegistrationActivity.this, username.getText().toString());
-    TextSecurePreferences.setPassword(RegistrationActivity.this, password.getText().toString());
+    TextSecurePreferences.setPassword(RegistrationActivity.this, userpassword.getText().toString());
     TextSecurePreferences.setUserId(RegistrationActivity.this, "119");// user_id
     TextSecurePreferences.setPushServerPassword(RegistrationActivity.this, registrationState.password);
     TextSecurePreferences.setSignalingKey(RegistrationActivity.this, signalingKey);

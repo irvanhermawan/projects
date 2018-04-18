@@ -33,7 +33,7 @@ import id.co.projectscoid.push.AccountManagerFactory;
 import id.co.projectscoid.recipients.Recipient;
 import id.co.projectscoid.sms.IncomingJoinedMessage;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.ContactTokenDetails;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class DirectoryHelper {
     if (notifyOfNewUsers) notifyNewUsers(context, newlyActiveUsers);
   }
 
-  private static @NonNull List<Address> refreshDirectory(@NonNull Context context, @NonNull SignalServiceAccountManager accountManager)
+  private static @NonNull List<Address> refreshDirectory(@NonNull Context context, @NonNull ProjectsServiceAccountManager accountManager)
       throws IOException
   {
     if (TextUtils.isEmpty(TextSecurePreferences.getLocalNumber(context))) {
@@ -124,7 +124,7 @@ public class DirectoryHelper {
       throws IOException
   {
     RecipientDatabase             recipientDatabase = DatabaseFactory.getRecipientDatabase(context);
-    SignalServiceAccountManager   accountManager    = AccountManagerFactory.createManager(context);
+    ProjectsServiceAccountManager   accountManager    = AccountManagerFactory.createManager(context);
     boolean                       activeUser        = recipient.resolve().getRegistered() == RegisteredState.REGISTERED;
     boolean                       systemContact     = recipient.isSystemContact();
     String                        number            = recipient.getAddress().serialize();

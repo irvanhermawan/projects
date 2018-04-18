@@ -37,20 +37,24 @@ import id.co.projectscoid.preferences.AppProtectionPreferenceFragment;
 import id.co.projectscoid.preferences.SmsMmsPreferenceFragment;
 import id.co.projectscoid.push.SecurityEventListener;
 import id.co.projectscoid.push.SignalServiceNetworkAccess;
+import id.co.projectscoid.push.SignalServiceMessageSender;
+import id.co.projectscoid.push.SignalServiceMessageReceiver;
 import id.co.projectscoid.service.MessageRetrievalService;
 import id.co.projectscoid.service.WebRtcCallService;
 import id.co.projectscoid.util.TextSecurePreferences;
+import id.co.projectscoid.util.CredentialsProvider;
+
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
-import org.whispersystems.signalservice.api.SignalServiceMessageReceiver;
-import org.whispersystems.signalservice.api.SignalServiceMessageSender;
-import org.whispersystems.signalservice.api.util.CredentialsProvider;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
+//import org.whispersystems.signalservice.api.SignalServiceMessageReceiver;
+//import org.whispersystems.signalservice.api.SignalServiceMessageSender;
+//import org.whispersystems.signalservice.api.util.CredentialsProvider;
 import org.whispersystems.signalservice.api.websocket.ConnectivityListener;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(complete = false, injects = {CleanPreKeysJob.class,
+@Module(complete = false, library = true, injects = {CleanPreKeysJob.class,
                                      CreateSignedPreKeyJob.class,
                                      PushGroupSendJob.class,
                                      PushTextSendJob.class,
@@ -86,7 +90,7 @@ public class SignalCommunicationModule {
   private final Context                      context;
   private final SignalServiceNetworkAccess   networkAccess;
 
-  private SignalServiceAccountManager  accountManager;
+  private ProjectsServiceAccountManager  accountManager;
   private SignalServiceMessageSender   messageSender;
   private SignalServiceMessageReceiver messageReceiver;
 
@@ -96,9 +100,9 @@ public class SignalCommunicationModule {
   }
 
   @Provides
-  synchronized SignalServiceAccountManager provideSignalAccountManager() {
+  synchronized ProjectsServiceAccountManager provideSignalAccountManager() {
     if (this.accountManager == null) {
-      this.accountManager = new SignalServiceAccountManager(networkAccess.getConfiguration(context),
+      this.accountManager = new ProjectsServiceAccountManager(networkAccess.getConfiguration(context),
                                                             new DynamicCredentialsProvider(context),
                                                             BuildConfig.USER_AGENT);
     }
@@ -152,6 +156,18 @@ public class SignalCommunicationModule {
       return TextSecurePreferences.getPushServerPassword(context);
     }
 
+    @Override
+    public String getUserName() {
+      return TextSecurePreferences.getUserName(context);
+    }
+    @Override
+    public String getUserId() {
+      return TextSecurePreferences.getUserId(context);
+    }
+    @Override
+    public String getUserPassword() {
+      return TextSecurePreferences.getPassword(context);
+    }
     @Override
     public String getSignalingKey() {
       return TextSecurePreferences.getSignalingKey(context);

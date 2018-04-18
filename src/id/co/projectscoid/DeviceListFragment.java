@@ -26,7 +26,7 @@ import id.co.projectscoid.dependencies.InjectableType;
 import id.co.projectscoid.util.task.ProgressDialogAsyncTask;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.ViewUtil;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.messages.multidevice.DeviceInfo;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class DeviceListFragment extends ListFragment
   private static final String TAG = DeviceListFragment.class.getSimpleName();
 
   @Inject
-  SignalServiceAccountManager accountManager;
+  ProjectsServiceAccountManager accountManager;
 
   private Locale                 locale;
   private View                   empty;

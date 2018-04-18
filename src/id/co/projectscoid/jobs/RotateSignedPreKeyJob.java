@@ -15,7 +15,7 @@ import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.PushNetworkException;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class RotateSignedPreKeyJob extends MasterSecretJob implements Injectable
 
   private static final String TAG = RotateSignedPreKeyJob.class.getName();
 
-  @Inject transient SignalServiceAccountManager accountManager;
+  @Inject transient ProjectsServiceAccountManager accountManager;
 
   public RotateSignedPreKeyJob(Context context) {
     super(context, JobParameters.newBuilder()

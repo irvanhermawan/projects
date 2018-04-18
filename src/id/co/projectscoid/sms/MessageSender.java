@@ -42,7 +42,7 @@ import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
 import org.whispersystems.jobqueue.JobManager;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.ContactTokenDetails;
 
 import java.io.IOException;
@@ -260,7 +260,7 @@ public class MessageSender {
       return false;
     } else {
       try {
-        SignalServiceAccountManager   accountManager = AccountManagerFactory.createManager(context);
+        ProjectsServiceAccountManager   accountManager = AccountManagerFactory.createManager(context);
         Optional<ContactTokenDetails> registeredUser = accountManager.getContact(destination.getAddress().serialize());
 
         if (!registeredUser.isPresent()) {

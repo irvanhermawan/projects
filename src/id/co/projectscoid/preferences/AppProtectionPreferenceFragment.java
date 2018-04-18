@@ -24,7 +24,7 @@ import id.co.projectscoid.jobs.MultiDeviceReadReceiptUpdateJob;
 import id.co.projectscoid.lock.RegistrationLockDialog;
 import id.co.projectscoid.service.KeyCachingService;
 import id.co.projectscoid.util.TextSecurePreferences;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +39,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   private CheckBoxPreference disablePassphrase;
 
   @Inject
-  SignalServiceAccountManager accountManager;
+  ProjectsServiceAccountManager accountManager;
 
   @Override
   public void onAttach(Activity activity) {

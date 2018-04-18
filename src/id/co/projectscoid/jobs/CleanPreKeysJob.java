@@ -11,7 +11,7 @@ import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.libsignal.InvalidKeyIdException;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyStore;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.NonSuccessfulResponseCodeException;
 import org.whispersystems.signalservice.api.push.exceptions.PushNetworkException;
 
@@ -32,7 +32,7 @@ public class CleanPreKeysJob extends MasterSecretJob implements InjectableType {
 
   private static final long ARCHIVE_AGE = TimeUnit.DAYS.toMillis(7);
 
-  @Inject transient SignalServiceAccountManager accountManager;
+  @Inject transient ProjectsServiceAccountManager accountManager;
   @Inject transient SignedPreKeyStoreFactory signedPreKeyStoreFactory;
 
   public CleanPreKeysJob(Context context) {

@@ -28,12 +28,14 @@ import id.co.projectscoid.util.DynamicTheme;
 import id.co.projectscoid.util.TextSecurePreferences;
 import id.co.projectscoid.util.Util;
 import id.co.projectscoid.util.task.ProgressDialogAsyncTask;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.InvalidKeyException;
 import org.whispersystems.libsignal.ecc.Curve;
 import org.whispersystems.libsignal.ecc.ECPublicKey;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+//import id.co.projectscoid.service.ProjectsServiceAccountManager;
+
 import org.whispersystems.signalservice.api.push.exceptions.NotFoundException;
 import org.whispersystems.signalservice.internal.push.DeviceLimitExceededException;
 
@@ -164,7 +166,7 @@ public class DeviceActivity extends PassphraseRequiredActionBarActivity
 
         try {
           Context                     context          = DeviceActivity.this;
-          SignalServiceAccountManager accountManager   = AccountManagerFactory.createManager(context);
+          ProjectsServiceAccountManager accountManager   = AccountManagerFactory.createManager(context);
           String                      verificationCode = accountManager.getNewDeviceVerificationCode();
           String                      ephemeralId      = uri.getQueryParameter("uuid");
           String                      publicKeyEncoded = uri.getQueryParameter("pub_key");

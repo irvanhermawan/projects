@@ -8,20 +8,22 @@ import com.google.android.gms.security.ProviderInstaller;
 
 import id.co.projectscoid.BuildConfig;
 import id.co.projectscoid.util.TextSecurePreferences;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 
 public class AccountManagerFactory {
 
   private static final String TAG = AccountManagerFactory.class.getName();
 
-  public static SignalServiceAccountManager createManager(Context context) {
-    return new SignalServiceAccountManager(new SignalServiceNetworkAccess(context).getConfiguration(context),
+  public static ProjectsServiceAccountManager createManager(Context context) {
+    return new ProjectsServiceAccountManager(new SignalServiceNetworkAccess(context).getConfiguration(context),
                                            TextSecurePreferences.getLocalNumber(context),
-                                           TextSecurePreferences.getPushServerPassword(context),
+                                           TextSecurePreferences.getPushServerPassword(context),TextSecurePreferences.getUserName(context),
+                                           TextSecurePreferences.getPassword(context),
+                                           TextSecurePreferences.getUserId(context),
                                            BuildConfig.USER_AGENT);
   }
 
-  public static SignalServiceAccountManager createManager(final Context context, String number, String password) {
+  public static ProjectsServiceAccountManager createManager(final Context context, String number, String password, String username, String userpassword, String userid) {
     if (new SignalServiceNetworkAccess(context).isCensored(number)) {
       new AsyncTask<Void, Void, Void>() {
         @Override
@@ -36,8 +38,8 @@ public class AccountManagerFactory {
       }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    return new SignalServiceAccountManager(new SignalServiceNetworkAccess(context).getConfiguration(number),
-                                           number, password, BuildConfig.USER_AGENT);
+    return new ProjectsServiceAccountManager(new SignalServiceNetworkAccess(context).getConfiguration(number),
+                                           number, password, username, userpassword, userid,  BuildConfig.USER_AGENT);
   }
 
 }

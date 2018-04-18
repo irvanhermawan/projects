@@ -13,7 +13,7 @@ import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.PushNetworkException;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class CreateSignedPreKeyJob extends MasterSecretJob implements Injectable
 
   private static final String TAG = CreateSignedPreKeyJob.class.getSimpleName();
 
-  @Inject transient SignalServiceAccountManager accountManager;
+  @Inject transient ProjectsServiceAccountManager accountManager;
 
   public CreateSignedPreKeyJob(Context context) {
     super(context, JobParameters.newBuilder()

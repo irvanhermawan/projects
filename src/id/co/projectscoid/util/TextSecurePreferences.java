@@ -75,6 +75,7 @@ public class TextSecurePreferences {
   public static final  String PASSWORD_PREF                    = "pref_password";
   public static final  String USER_ID_PREF                     = "pref_user_id";
   public static final  String COOKIES                          = "cookies";
+  public static final  String SIGN_IN                          = "sign_in";
   private static final String VERIFYING_STATE_PREF             = "pref_verifying";
   public  static final String REGISTERED_GCM_PREF              = "pref_gcm_registered";
   private static final String GCM_PASSWORD_PREF                = "pref_gcm_password";
@@ -169,7 +170,12 @@ public class TextSecurePreferences {
   public static void setScreenLockTimeout(@NonNull Context context, long value) {
     setLongPreference(context, SCREEN_LOCK_TIMEOUT, value);
   }
-
+  public static void setSignIn(Context context, boolean value){
+    setBooleanPreference(context, SIGN_IN, value);
+  }
+  public static boolean isSignIn(Context context){
+    return getBooleanPreference(context, SIGN_IN, false);
+  }
   public static boolean isRegistrationtLockEnabled(@NonNull Context context) {
     return getBooleanPreference(context, REGISTRATION_LOCK_PREF, false);
   }

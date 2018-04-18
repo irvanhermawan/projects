@@ -7,7 +7,7 @@ import id.co.projectscoid.dependencies.InjectableType;
 import id.co.projectscoid.util.TextSecurePreferences;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 import org.whispersystems.signalservice.api.push.exceptions.NetworkFailureException;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class RefreshAttributesJob extends ContextJob implements InjectableType {
 
   private static final String TAG = RefreshAttributesJob.class.getSimpleName();
 
-  @Inject transient SignalServiceAccountManager signalAccountManager;
+  @Inject transient ProjectsServiceAccountManager signalAccountManager;
 
   public RefreshAttributesJob(Context context) {
     super(context, JobParameters.newBuilder()

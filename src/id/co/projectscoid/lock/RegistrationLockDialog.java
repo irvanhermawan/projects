@@ -35,7 +35,7 @@ import id.co.projectscoid.components.SwitchPreferenceCompat;
 import id.co.projectscoid.util.ServiceUtil;
 import id.co.projectscoid.util.TextSecurePreferences;
 import org.whispersystems.libsignal.util.guava.Optional;
-import org.whispersystems.signalservice.api.SignalServiceAccountManager;
+import id.co.projectscoid.service.ProjectsServiceAccountManager;
 
 import java.io.IOException;
 
@@ -109,7 +109,7 @@ public class RegistrationLockDialog {
   }
 
   @SuppressLint("StaticFieldLeak")
-  public static void showRegistrationLockPrompt(@NonNull Context context, @NonNull SwitchPreferenceCompat preference, @NonNull SignalServiceAccountManager accountManager) {
+  public static void showRegistrationLockPrompt(@NonNull Context context, @NonNull SwitchPreferenceCompat preference, @NonNull ProjectsServiceAccountManager accountManager) {
     AlertDialog dialog = new AlertDialog.Builder(context)
                                         .setTitle(R.string.RegistrationLockDialog_registration_lock)
                                         .setView(R.layout.registration_lock_dialog_view)
@@ -183,7 +183,7 @@ public class RegistrationLockDialog {
   }
 
   @SuppressLint("StaticFieldLeak")
-  public static void showRegistrationUnlockPrompt(@NonNull Context context, @NonNull SwitchPreferenceCompat preference, @NonNull SignalServiceAccountManager accountManager) {
+  public static void showRegistrationUnlockPrompt(@NonNull Context context, @NonNull SwitchPreferenceCompat preference, @NonNull ProjectsServiceAccountManager accountManager) {
     AlertDialog dialog = new AlertDialog.Builder(context)
                                         .setTitle(R.string.RegistrationLockDialog_disable_registration_lock_pin)
                                         .setView(R.layout.registration_unlock_dialog_view)
